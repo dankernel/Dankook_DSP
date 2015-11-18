@@ -1,0 +1,289 @@
+#include "wave.h"
+
+void LongToString(long H_chunkID, char *chunkID)
+{
+  long MASK = 0x000000FF;
+
+  chunkID[0] = (char)(H_chunkID & MASK);
+  chunkID[1] = (char)((H_chunkID >> 8) & MASK);
+  chunkID[2] = (char)((H_chunkID >> 16) & MASK);
+  chunkID[3] = (char)((H_chunkID >> 24) & MASK);
+  chunkID[4] = '\0';
+}
+
+int ReadWave(char *filename, RiffHeader *R, FormatChunk *F, DataChunk *D) //wav2dat
+{
+  FILE *fp;
+  HEADER H;
+  char chunkID[5];
+
+  if ((fp = fopen(filename, "rb")) == NULL)
+  {
+    printf("\nCannot read file.\n\n");
+    return 0;
+  }
+
+  //청크는 chunkID 와 chunkSize 로 시작함
+  // 청크의 시작이 없을 때 까지 반복
+  while (0 != fread(&H, sizeof(HEADER), 1, fp))
+  {
+    LongToString(H.chunkID, chunkID);
+    if (strcmp(chunkID, "RIFF") == 0) // RIFF chunk 인지 확인
+    {
+      R->chunkID = H.chunkID;
+      R->chunkSize = H.chunkSize;
+      fread(&(R->wFormat), sizeof(R->wFormat), 1, fp);
+      LongToString(R->wFormat, chunkID);
+
+      if (strcmp(chunkID, "WAVE") != 0) // WAVE chunk 인지 확인
+      {
+        printf("\nNot supported format.\n\n");
+        return 0;
+      }
+    }
+
+    // format chunk 처리
+    else if (strcmp(chunkID, "fmt ") == 0)
+    {
+      F->chunkID = H.chunkID;
+      F->chunkSize = H.chunkSize;
+      fread(&(F->field), sizeof(F->field), 1, fp);
+      // 8bit, 16bit가 아닐때 예외처리
+      if (!(F->field.wBitsPerSample == 8) && !(F->field.wBitsPerSample == 16))
+      {
+        printf("\n%d bits per sample is not supported.\n\n", F->field.wBitsPerSample);
+        return -1;
+      }
+
+      // chunk size 가 16 이상인 경우
+      if (H.chunkSize > sizeof(F->field))
+      {
+        // 다음 chunk ID 위치로 이동
+        fseek(fp, (long)(H.chunkSize - sizeof(F->field)), SEEK_CUR);
+      }
+    }
+    // data chunk 처리
+    else if (strcmp(chunkID, "data") == 0)
+    {
+      D->chunkID = H.chunkID;
+      D->chunkSize = H.chunkSize;
+      D->waveformData
+        = (unsigned char *)malloc(sizeof(char) * H.chunkSize);
+
+      if (D->waveformData == NULL)
+        return -1;
+      fread(D->waveformData, 1, H.chunkSize, fp);
+    }
+    // RIFF, fmt, data 이외에는 처리하지 않음
+    else
+    {
+      fseek(fp, (long)H.chunkSize, SEEK_CUR);
+    }
+  }
+  fclose(fp);
+  return 1;
+}
+
+unsigned char* WaveToPCM(char* name, long* data_size)
+{
+  RiffHeader R;
+  FormatChunk F;
+  DataChunk D;
+
+  ReadWave(name, &R, &F, &D);
+
+  *data_size = D.chunkSize;
+  if (F.field.wBitsPerSample != 8){
+    printf("\n BitsPerSample of input wave file must be 8 bits !!!");
+  }
+
+  return(D.waveformData);
+}
+
+
+void read()
+{
+  RiffHeader R;
+  FormatChunk F;
+  DataChunk D;
+
+  char name[100] = "Demo.wav";
+  double PlayTime;
+
+  ReadWave(name, &R, &F, &D);
+
+  PlayTime = (double)D.chunkSize / (F.field.dwSamplesPerSec * F.field.wChannels * F.field.wBitsPerSample / 8);
+
+  printf("\n[] Data chunk size = %d", D.chunkSize);
+  printf("\n[] The number of channel = %d (mono = 1, stereo = 2)", F.field.wChannels);
+  printf("\n[] Sampling rate = %d [Hz or samples/sec]", F.field.dwSamplesPerSec);
+  printf("\n[] Sample resolution = %d [bits/sample]", F.field.wBitsPerSample);
+  printf("\n[] Play time = %lf [sec]\n", PlayTime);
+}
+
+
+int WriteWave2(char *filename, RiffHeader R, FormatChunk F, DataChunk D)
+{
+  FILE *fp;
+
+  if ((fp = fopen(filename, "wb")) == NULL){
+    printf("\t File Open Failure\n");
+    return(0);
+  }
+
+  fwrite(&R, sizeof(R), 1, fp);
+
+  fwrite(&F, sizeof(F), 1, fp);
+
+  fwrite(&(D.chunkID), sizeof(D.chunkID), 1, fp);
+  fwrite(&(D.chunkSize), sizeof(D.chunkSize), 1, fp);
+  fwrite(D.waveformData, sizeof(char), D.chunkSize, fp);
+
+  fclose(fp);
+
+  return(1);
+}
+
+int WriteWave(char *name,
+    short BitsPerSample,   // 8bit과 16bit만 허용 
+    long SamplesPerSec, // sampling rate
+    short Channel, // channels
+    unsigned char *waveform_data, // PCM data
+    long waveform_data_size // PCM data 의 길이
+    )
+{
+  RiffHeader R;
+  FormatChunk F;
+  DataChunk D;
+
+  R.chunkID = 0x46464952; // "RIFF"
+  R.chunkSize = 16 + waveform_data_size + 20;
+  // PCM data 길이 + RIFF, Format 청크의 길이 - 8 Byte
+  R.wFormat = 0x45564157; // "WAVE"
+
+  F.chunkID = 0x20746d66;  // "fmt "
+  F.chunkSize = 16; // PCM 이므로 추가 사항 없음
+  F.field.wFormatTag = 1; // PCM
+  F.field.wChannels = Channel;
+  F.field.dwAvgBytesPerSec = SamplesPerSec * Channel * (BitsPerSample / 8);
+  F.field.dwSamplesPerSec = SamplesPerSec;
+  F.field.wBitsPerSample = BitsPerSample;
+  F.field.wBlockAlign = Channel*(BitsPerSample / 8);
+
+  D.chunkID = 0x61746164;   // "data"
+  D.chunkSize = waveform_data_size;
+
+  D.waveformData = waveform_data;
+
+  WriteWave2(name, R, F, D);
+
+  return(1);
+}
+
+/*
+ * Creating do file
+ */
+void write_do()
+{
+  char name[100] = "do.wav";
+
+  static double freq[] = {264.0, 297.0, 330.0, 352.0, 396.0, 440.0, 495.0, 528.0}; // 도 의 주파수
+
+  long SamplesPerSec = 22050; // 22kHz sampling
+  short BitsPerSample = 8; // 8bits
+  short Channels = 1; // mono
+  double SamplesPeriod = 1 / SamplesPerSec;
+  double PlayTime = 8;
+  long waveformDataSize;
+  unsigned char *waveformData;
+  double t, f;
+  long index;
+
+  waveformDataSize = (long)(PlayTime*SamplesPerSec*Channels*(BitsPerSample / 8));
+  waveformData = (unsigned char *)malloc(sizeof(char)*waveformDataSize);
+
+  t = 0.0;
+  f = freq[0];
+  for (index = 0; index < waveformDataSize; index++, t += 1.0 / SamplesPerSec) {
+    f = freq[(int)(index / 22050)];  // 도 ~
+    waveformData[index] = (int)(128.0 + 100.0 * sin(2.0 * PI * f * t) + 0.5);
+  }
+
+  printf("%10ld %10ld\n", index, f);
+  WriteWave(name, BitsPerSample, SamplesPerSec, Channels, waveformData, waveformDataSize);
+
+  free(waveformData);
+}
+
+void write_mod_samplingrate()
+{
+  RiffHeader R;
+  FormatChunk F;
+  DataChunk D;
+
+  long SamplesPerSec;
+  char name_input[100] = "headset2.wav";
+  char name_half[100] = "half.wav";
+  char name_double[100] = "double.wav";
+  ReadWave(name_input, &R, &F, &D);
+
+  SamplesPerSec = F.field.dwSamplesPerSec / 2;
+  WriteWave(name_half, F.field.wBitsPerSample, SamplesPerSec, F.field.wChannels, D.waveformData, D.chunkSize);
+
+  SamplesPerSec = F.field.dwSamplesPerSec * 2;
+  WriteWave(name_double, F.field.wBitsPerSample, SamplesPerSec, F.field.wChannels, D.waveformData, D.chunkSize);
+}
+
+void interpolation(unsigned char *input, long size, unsigned char *output)
+{
+  long i;
+  unsigned char *zeropad = (unsigned char *)malloc(sizeof(char) * size * 2);
+  unsigned char value;
+
+  // Zero padding 
+  for (i = 0; i < size; i++) {
+    zeropad[2 * i] = input[i];
+    zeropad[2 * i + 1] = 0;
+  }
+
+  // Conv
+  for (i = 1; i < size * 2 - 1; i++) {
+    value = (int)((zeropad[i - 1] + 2 * zeropad[i] + zeropad[i + 1]) / 2.0);
+    output[i] = (unsigned char)CLIPPING(value);
+  }
+
+}
+
+void subsmapling2to1(unsigned char *input, long size, unsigned char *output)
+{
+  long i;
+
+  for (i = 0; i < size; i += 2) {
+    output[i / 2] = input[i];
+  }
+
+}
+
+void decimation1st(unsigned char *input, long size, unsigned char *output)
+{
+  long i, value;
+  unsigned char *filter;
+
+  filter = (unsigned char *)malloc(sizeof(char) * size);
+
+  for (i = 1; i < size; i++) {
+    value = (int)((input[i - 1] + 2 * input[i] + input[i + 1]) / 4.0);
+    filter = [i] (unsigned char)CLIPPING(value);
+  }
+
+  subsmapling2to1(filter, size, output);
+
+  free(filter);
+
+}
+
+
+
+
+
+

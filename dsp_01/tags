@@ -1,0 +1,41 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CLIPPING	wave.h	9;"	d
+DataChunk	wave.h	/^} DataChunk;$/;"	t	typeref:struct:__anon5
+FormatChunk	wave.h	/^} FormatChunk;$/;"	t	typeref:struct:__anon4
+HEADER	wave.h	/^} HEADER;$/;"	t	typeref:struct:__anon1
+ID	wave.h	8;"	d
+LongToString	wave.cpp	/^void LongToString(long H_chunkID, char *chunkID)$/;"	f
+PI	wave.h	10;"	d
+ReadWave	wave.cpp	/^int ReadWave(char *filename, RiffHeader *R, FormatChunk *F, DataChunk *D) \/\/wav2dat$/;"	f
+RiffHeader	wave.h	/^} RiffHeader;$/;"	t	typeref:struct:__anon2
+WaveToPCM	wave.cpp	/^unsigned char* WaveToPCM(char* name, long* data_size)$/;"	f
+WriteWave	wave.cpp	/^int WriteWave(char *name,$/;"	f
+WriteWave2	wave.cpp	/^int WriteWave2(char *filename, RiffHeader R, FormatChunk F, DataChunk D)$/;"	f
+chunkID	wave.h	/^  ID chunkID; \/\/ RIFF, 식별자$/;"	m	struct:__anon2
+chunkID	wave.h	/^  ID chunkID; \/\/ASCII코드로 “data" (0x64617461 big-endian form). $/;"	m	struct:__anon5
+chunkID	wave.h	/^  ID chunkID; \/\/ASCII코드로 “fmt " (0x666d7420 big-endian form). $/;"	m	struct:__anon4
+chunkID	wave.h	/^  ID chunkID;$/;"	m	struct:__anon1
+chunkSize	wave.h	/^  long chunkSize; \/\/ 현재부터 파일 끝까지의 바이트 수$/;"	m	struct:__anon2
+chunkSize	wave.h	/^  long chunkSize; \/\/데이터 청크에 포함된 데이터의 크기$/;"	m	struct:__anon5
+chunkSize	wave.h	/^  long chunkSize; \/\/포맷 청크의 크기 (byte), wFormat 이 1일때 (PCM 일때)는 16$/;"	m	struct:__anon4
+chunkSize	wave.h	/^  long chunkSize;$/;"	m	struct:__anon1
+dwAvgBytesPerSec	wave.h	/^  unsigned long dwAvgBytesPerSec; \/\/전송률 (stereo의 경우, 2*dwSamplesPerSec)$/;"	m	struct:__anon3
+dwSamplesPerSec	wave.h	/^  unsigned long dwSamplesPerSec; \/\/샘플링 레이트$/;"	m	struct:__anon3
+field	wave.h	/^  subFormatChunk field;$/;"	m	struct:__anon4
+interpolation	wave.cpp	/^void interpolation(unsigned char *input, long size, unsigned char *output)$/;"	f
+main	main.cpp	/^int main(int argc, char** argv) {$/;"	f
+read	wave.cpp	/^void read()$/;"	f
+subFormatChunk	wave.h	/^} subFormatChunk;$/;"	t	typeref:struct:__anon3
+wBitsPerSample	wave.h	/^  unsigned short wBitsPerSample; \/\/ bits per sample$/;"	m	struct:__anon3
+wBlockAlign	wave.h	/^  unsigned short wBlockAlign; \/\/ Block Align$/;"	m	struct:__anon3
+wChannels	wave.h	/^  unsigned short wChannels; \/\/ the number of audio channels (Mono = 1, Stereo = 2, etc)$/;"	m	struct:__anon3
+wFormat	wave.h	/^  long wFormat;$/;"	m	struct:__anon2
+wFormatTag	wave.h	/^  short wFormatTag; \/\/ PCM = 1 , Values other than 1 indicate some form of compression $/;"	m	struct:__anon3
+waveformData	wave.h	/^  unsigned char *waveformData; \/\/ PCM 데이터$/;"	m	struct:__anon5
+write_do	wave.cpp	/^void write_do()$/;"	f
+write_mod_samplingrate	wave.cpp	/^void write_mod_samplingrate()$/;"	f

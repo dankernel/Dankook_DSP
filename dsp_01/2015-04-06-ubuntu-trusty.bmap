@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+<!-- This file contains the block map for an image file, which is basically
+     a list of useful (mapped) block numbers in the image file. In other words,
+     it lists only those blocks which contain data (boot sector, partition
+     table, file-system metadata, files, directories, extents, etc). These
+     blocks have to be copied to the target device. The other blocks do not
+     contain any useful data and do not have to be copied to the target
+     device.
+
+     The block map an optimization which allows to copy or flash the image to
+     the image quicker than copying of flashing the entire image. This is
+     because with bmap less data is copied: <MappedBlocksCount> blocks instead
+     of <BlocksCount> blocks.
+
+     Besides the machine-readable data, this file contains useful commentaries
+     which contain human-readable information like image size, percentage of
+     mapped data, etc.
+
+     The 'version' attribute is the block map file format version in the
+     'major.minor' format. The version major number is increased whenever an
+     incompatible block map format change is made. The minor number changes
+     in case of minor backward-compatible changes. -->
+
+<bmap version="1.3">
+    <!-- Image size in bytes: 1.8 GiB -->
+    <ImageSize> 1879048192 </ImageSize>
+
+    <!-- Size of a block in bytes -->
+    <BlockSize> 4096 </BlockSize>
+
+    <!-- Count of blocks in the image file -->
+    <BlocksCount> 458752 </BlocksCount>
+
+    <!-- Count of mapped blocks: 473.4 MiB or 26.4%  -->
+    <MappedBlocksCount> 121181     </MappedBlocksCount>
+
+    <!-- The checksum of this bmap file. When it is calculated, the value of
+         the SHA1 checksum has be zero (40 ASCII "0" symbols). -->
+    <BmapFileSHA1> 3c67a5d797a0c5e02ebc45465a9ba69693e429b5 </BmapFileSHA1>
+
+    <!-- The block map which consists of elements which may either be a
+         range of blocks or a single block. The 'sha1' attribute (if present)
+         is the SHA1 checksum of this blocks range. -->
+    <BlockMap>
+        <Range sha1="497cc13ac2754be4b312189c739189dacc94c564"> 0-4567 </Range>
+        <Range sha1="28d027dd3c784f9508fb4120860ee083bf82a17c"> 16640-16758 </Range>
+        <Range sha1="b6954d7f907114e5fa522a6c830302132dcbc097"> 16762-16774 </Range>
+        <Range sha1="f90bd34d1f36b340df46c14a74b8d958de4ce509"> 16779-18267 </Range>
+        <Range sha1="8f5a4fdb13286cdde0694ef2c8bd643e6075f8e4"> 18757 </Range>
+        <Range sha1="d417c7036b01b932a4d2b8bcfcb90c712fc08e4a"> 19251 </Range>
+        <Range sha1="7d219863c43588dea207b0a1e9163ee391798aba"> 19745 </Range>
+        <Range sha1="723369d26ca65b67d87ea3b6d8a3470793596959"> 20239 </Range>
+        <Range sha1="079b8eb4a6bdd6b953e83b0d9c86e48d5267d014"> 20733 </Range>
+        <Range sha1="e09aff52b873664bce4cda654b51c2f05079dc84"> 21227 </Range>
+        <Range sha1="f132a4e2fc103c213b99970b2b9add9604b1f8a5"> 23697-26393 </Range>
+        <Range sha1="f980dacc8b38de3ab3999c25493f4da60c768864"> 49408-49409 </Range>
+        <Range sha1="6f74632c2bc212f394ff40b3411c6808a77527b8"> 49517-114945 </Range>
+        <Range sha1="ce993461d6294d7101d7ef2be86397add50d79ae"> 115053-153696 </Range>
+        <Range sha1="5e54aeeb16686266eb6c3d19f5d1ad4f31a97b3a"> 180480-180481 </Range>
+        <Range sha1="d6f60db1ccb155962af12bcd0620654f922e7933"> 213248-221439 </Range>
+        <Range sha1="441ffa0f7177422cb791b1a84715432c441d4976"> 246016-246017 </Range>
+        <Range sha1="bffe220a39c12d4cb0eeb21d7aa5d544d5854041"> 311552-311553 </Range>
+        <Range sha1="1adc95bebe9eea8c112d40cd04ab7a8d75c4f961"> 458736-458751 </Range>
+    </BlockMap>
+</bmap>
