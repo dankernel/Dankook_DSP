@@ -264,26 +264,247 @@ void subsmapling2to1(unsigned char *input, long size, unsigned char *output)
 
 }
 
-void decimation1st(unsigned char *input, long size, unsigned char *output)
+
+void NoiseGen(int *noise, long size, int range)
 {
-  long i, value;
-  unsigned char *filter;
+  long i;
 
-  filter = (unsigned char *)malloc(sizeof(char) * size);
+  for (i = 0; i < size; i++) {
+    noise[i] = (rand() % (2 * range + 1) - range);
+    /* code */
+  }
+}
 
-  for (i = 1; i < size; i++) {
-    value = (int)((input[i - 1] + 2 * input[i] + input[i + 1]) / 4.0);
-    filter = [i] (unsigned char)CLIPPING(value);
+void write_noise()
+{
+  char name_in[100] = "headset2.wav";
+  char name_out[100] = "test_demo+noise.wav";
+  char name1[100] = "test_noise.wav";
+  long SamplesPerSec = 11025; // 11kHz
+  short BitsPerSample = 8; // 8bits
+  short Channels = 1; // mono
+  double SamplesPeriod = 1 / SamplesPerSec;
+  double PlayTime = 5;
+  long waveformDataSize;
+  unsigned char * waveformData;
+  int * noise;
+  long i;
+
+  RiffHeader R;
+  FormatChunk F;
+  DataChunk D;
+
+  waveformDataSize = (long)(5 /*  playtime = 5 */ * 11025 * 1 *(8 / 8));
+  waveformData = (unsigned char *)malloc(sizeof(char)*waveformDataSize);
+  noise = (int *)malloc(sizeof(int) * waveformDataSize);
+
+  // 잡음 생성
+  NoiseGen(noise, waveformDataSize, 30); // range = 30;
+  for (i = 0; i < waveformDataSize; i++)
+    waveformData[i] = CLIPPING(noise[i] + 128);
+  WriteWave(name1, BitsPerSample, SamplesPerSec, Channels, waveformData, waveformDataSize);
+
+  // 잡음 + 다른 사운드 데이터
+  ReadWave(name_in, &R, &F, &D);
+  free(noise);
+  noise = (int *)malloc(sizeof(int) * D.chunkSize);
+
+  NoiseGen(noise, D.chunkSize, 5);
+  for (i = 0; i < D.chunkSize; i++)
+    D.waveformData[i] = CLIPPING(D.waveformData[i] + noise[i]);
+
+  WriteWave(name_out, F.field.wBitsPerSample, F.field.dwSamplesPerSec, F.field.wChannels, D.waveformData, D.chunkSize);
+
+  free(waveformData);
+  free(noise);
+}
+
+unsigned char *MemoryAllocationAndDataCopy(unsigned char *waveformData, long chunkSize, int hSize)
+{
+  unsigned char *tmp = NULL;
+  int i;
+
+  tmp = (unsigned char *) malloc(sizeof(char) * chunkSize);
+
+  for (i = 0; i < chunkSize; i++) {
+    tmp[i] = waveformData[i];
   }
 
-  subsmapling2to1(filter, size, output);
 
-  free(filter);
-
+  return tmp;
 }
 
 
+// 노이즈 제거 (mean filter)
+void write_filter_meanfilter()
+{
+  // input 은 노이즈 섞인 파일
+  char name_in[100] = "test_demo+noise.wav";
+  char name_out[100] = "test_demo+noise+meanfilter.wav";
+  char name_out2[100] = "test_demo+noise+gaussian.wav";
+
+  long i;
+  unsigned char *filter;
+  int temp, filterSize, hSize, k;
+  // 가우시안 필터 (size 5)
+  double gfilter[5] = { 0.0625, 0.25, 0.375, 0.25, 0.0625 };
+  double tmp;
+
+  RiffHeader R;
+  FormatChunk F;
+  DataChunk D;
+
+  filterSize = 5; // 필터 크기는 홀수만 가능
+  hSize = (int)(filterSize / 2);
+  ReadWave(name_in, &R, &F, &D);
+
+  // 메모리 복사
+  filter = MemoryAllocationAndDataCopy(D.waveformData, D.chunkSize, hSize);
+
+  for (i = 0; i < D.chunkSize; i++)
+  {
+    temp = 0;
+    for (k = -hSize; k <= hSize; k++)
+    {
+      temp += (filter[i + k] - 128);
+    }
+    D.waveformData[i] = CLIPPING(temp / filterSize + 128);
+  }
+
+  WriteWave(name_out, F.field.wBitsPerSample, F.field.dwSamplesPerSec, F.field.wChannels, D.waveformData, D.chunkSize);
+
+  // free(filter - hSize);
+
+  // gaussian 필터링
+  hSize = (int)(sizeof(sizeof(gfilter) / sizeof(double))) / 2;
+  filter = MemoryAllocationAndDataCopy(D.waveformData, D.chunkSize, hSize);
+
+  for (i = 0; i < D.chunkSize; i++) {
+    tmp = 0.0;
+    for (k = -hSize; k <= hSize; k++) {
+      tmp += ((filter[i + k] - 128) * (gfilter[k + hSize]));
+    }
+    D.waveformData[i] = CLIPPING((int)tmp + 128);
+  }
+
+  WriteWave(name_out2, F.field.wBitsPerSample, F.field.dwSamplesPerSec, F.field.wChannels, D.waveformData, D.chunkSize);
+
+  // free(filter - hSize);
+}
+
+unsigned char GetMaxWaveform(unsigned char * data, long size)
+{
+    long i;
+      unsigned char max;
+        max = abs(data[0] - 128); // max 값 초기화
+
+          // 최대 진폭 찾기
+        for (i = 1; i < size; i++)
+        {
+          if (abs(data[i] - 128) > max)
+            max = abs(data[i] - 128);
+        }
+
+        return max;
+}
+
+// 정규화
+void write_normalize()
+{
+  char name_in[100] = "headset2.wav";
+  char name_out[100] = "test_normalize.wav";
+
+  long i;
+  unsigned char * data, maxvalue;
+  double scale;
+
+  RiffHeader R;
+  FormatChunk F;
+  DataChunk D;
+
+  ReadWave(name_in, &R, &F, &D);
+  data = D.waveformData;
+  maxvalue = GetMaxWaveform(data, D.chunkSize);
+  scale = (double)128 / maxvalue; // 증폭량 결정
+  printf("normalization x%.1lf (maximum waveform level %d)\n", scale, maxvalue);
+
+  // 증폭
+  for (i = 0; i < D.chunkSize; i++)
+  {
+    data[i] = CLIPPING((data[i] - 128) * scale + 128.0);
+  }
+
+  WriteWave(name_out, F.field.wBitsPerSample, F.field.dwSamplesPerSec, F.field.wChannels, data, D.chunkSize);
+}
+
+// 기음과 배음을 발생시키는 함수 Harmonics()
+unsigned char Harmonics(int type /*  배음의 종류*/, double f /*  기음의 주파수 */, double t /*  시간 변수 */)
+{
+  double value;
+
+  switch (type)
+  {
+    case 0: // 기음으로 구성
+      value = 50.0 * sin(2.0 * PI * f * t);
+      break;
+    case 1: // 2~5배의 주파수를 가진 배음을 첨가한 소리로 구성
+      value = 50.0 * sin(2.0 * PI * f * t) +
+        30.0 * sin(2.0 * PI * (2.0 * f) * t) +
+        20.0 * sin(2.0 * PI * (3.0 * f) * t) +
+        10.0 * sin(2.0 * PI * (4.0 * f) * t) +
+        5.0 * sin(2.0 * PI * (5.0 * f) * t);
+      break;
+    case 2: // 2, 4, 6, 8배의 주파수를 가진 배음을 첨가한 소리로 구성
+      value = 50.0 * sin(2.0 * PI * f * t) +
+        30.0 * sin(2.0 * PI * (2.0 * f) * t) +
+        20.0 * sin(2.0 * PI * (4.0 * f) * t) +
+        10.0 * sin(2.0 * PI * (6.0 * f) * t) +
+        5.0 * sin(2.0 * PI * (8.0 * f) * t);
+      break;
+    default:
+      value = 50.0 * sin(2.0 * PI * f * t);
+      break;
+  }
+  return ((unsigned char)(value + 128.0)); // 128을 더해 출력
+}
 
 
+// 화음
+void write_harmonics()
+{
+  char name[100] = "test_harmonics.wav";
 
+  //도, 레, 미, 파, 솔, 라, 시, 도의 주파수
+  static double freq[] = {
+    264.0, 297.0, 330.0, 352.0, 396.0, 440.0, 495.0, 528.0
+  };
 
+  long SamplesPerSec = 11025; // 11kHz sampling
+  short BitsPerSample = 8; // 8bits
+  short Channels = 1; // mono
+  double SamplesPeriod = 1 / SamplesPerSec;
+  double PlayTime = 1; // 한 음정은 1초씩
+  long waveformDataSize;
+  unsigned char *waveformData;
+  double t, f;
+  long index, length;
+  int i, type, num = 8; // 8개의 음정
+
+  length = (long)(PlayTime * SamplesPerSec * Channels * (BitsPerSample / 8));
+  waveformDataSize = length * num;
+  waveformData = (unsigned char *)malloc(sizeof(char)*waveformDataSize);
+
+  type = 1;
+
+  for (i = 0; i < num; i++)
+  {
+    f = freq[i]; // 음정
+    for (index = 0, t = 0.0; index < length; index++, t += 1.0 / SamplesPerSec)
+    {
+      waveformData[length * i + index] = Harmonics(type, f, t);
+    }
+  }
+
+  WriteWave(name, BitsPerSample, SamplesPerSec, Channels, waveformData, waveformDataSize);
+  free(waveformData);
+}

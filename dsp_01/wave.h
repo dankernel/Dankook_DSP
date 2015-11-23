@@ -6,7 +6,7 @@
 #include <memory.h>
 
 #define ID long
-#define CLIPPING(x) (x) < 0 ? 0 : (x) > 255 ? 255 : (x)
+#define CLIPPING(x) x < 0 ? 0 : x > 255 ? 255 : x
 #define PI 3.14159265358979323846
 
 typedef struct {
