@@ -17,8 +17,7 @@ int ReadWave(char *filename, RiffHeader *R, FormatChunk *F, DataChunk *D) //wav2
   HEADER H;
   char chunkID[5];
 
-  if ((fp = fopen(filename, "rb")) == NULL)
-  {
+  if ((fp = fopen(filename, "rb")) == NULL) {
     printf("\nCannot read file.\n\n");
     return 0;
   }
@@ -28,43 +27,38 @@ int ReadWave(char *filename, RiffHeader *R, FormatChunk *F, DataChunk *D) //wav2
   while (0 != fread(&H, sizeof(HEADER), 1, fp))
   {
     LongToString(H.chunkID, chunkID);
-    if (strcmp(chunkID, "RIFF") == 0) // RIFF chunk 인지 확인
-    {
+    // RIFF chunk 인지 확인
+    if (strcmp(chunkID, "RIFF") == 0) {
       R->chunkID = H.chunkID;
       R->chunkSize = H.chunkSize;
       fread(&(R->wFormat), sizeof(R->wFormat), 1, fp);
       LongToString(R->wFormat, chunkID);
 
-      if (strcmp(chunkID, "WAVE") != 0) // WAVE chunk 인지 확인
-      {
+      // WAVE chunk 인지 확인
+      if (strcmp(chunkID, "WAVE") != 0) {
         printf("\nNot supported format.\n\n");
         return 0;
       }
     }
-
     // format chunk 처리
-    else if (strcmp(chunkID, "fmt ") == 0)
-    {
+    else if (strcmp(chunkID, "fmt ") == 0) {
       F->chunkID = H.chunkID;
       F->chunkSize = H.chunkSize;
       fread(&(F->field), sizeof(F->field), 1, fp);
       // 8bit, 16bit가 아닐때 예외처리
-      if (!(F->field.wBitsPerSample == 8) && !(F->field.wBitsPerSample == 16))
-      {
+      if (!(F->field.wBitsPerSample == 8) && !(F->field.wBitsPerSample == 16)) {
         printf("\n%d bits per sample is not supported.\n\n", F->field.wBitsPerSample);
         return -1;
       }
 
       // chunk size 가 16 이상인 경우
-      if (H.chunkSize > sizeof(F->field))
-      {
+      if (H.chunkSize > sizeof(F->field)) {
         // 다음 chunk ID 위치로 이동
         fseek(fp, (long)(H.chunkSize - sizeof(F->field)), SEEK_CUR);
       }
     }
     // data chunk 처리
-    else if (strcmp(chunkID, "data") == 0)
-    {
+    else if (strcmp(chunkID, "data") == 0) {
       D->chunkID = H.chunkID;
       D->chunkSize = H.chunkSize;
       D->waveformData
@@ -75,8 +69,7 @@ int ReadWave(char *filename, RiffHeader *R, FormatChunk *F, DataChunk *D) //wav2
       fread(D->waveformData, 1, H.chunkSize, fp);
     }
     // RIFF, fmt, data 이외에는 처리하지 않음
-    else
-    {
+    else {
       fseek(fp, (long)H.chunkSize, SEEK_CUR);
     }
   }
@@ -126,7 +119,7 @@ int WriteWave2(char *filename, RiffHeader R, FormatChunk F, DataChunk D)
 {
   FILE *fp;
 
-  if ((fp = fopen(filename, "wb")) == NULL){
+  if ((fp = fopen(filename, "wb")) == NULL) {
     printf("\t File Open Failure\n");
     return(0);
   }
@@ -334,7 +327,6 @@ unsigned char *MemoryAllocationAndDataCopy(unsigned char *waveformData, long chu
   return tmp;
 }
 
-
 // 노이즈 제거 (mean filter)
 void write_filter_meanfilter()
 {
@@ -361,11 +353,9 @@ void write_filter_meanfilter()
   // 메모리 복사
   filter = MemoryAllocationAndDataCopy(D.waveformData, D.chunkSize, hSize);
 
-  for (i = 0; i < D.chunkSize; i++)
-  {
+  for (i = 0; i < D.chunkSize; i++) {
     temp = 0;
-    for (k = -hSize; k <= hSize; k++)
-    {
+    for (k = -hSize; k <= hSize; k++) {
       temp += (filter[i + k] - 128);
     }
     D.waveformData[i] = CLIPPING(temp / filterSize + 128);
@@ -394,18 +384,17 @@ void write_filter_meanfilter()
 
 unsigned char GetMaxWaveform(unsigned char * data, long size)
 {
-    long i;
-      unsigned char max;
-        max = abs(data[0] - 128); // max 값 초기화
+  long i;
+  unsigned char max;
+  max = abs(data[0] - 128); // max 값 초기화
 
-          // 최대 진폭 찾기
-        for (i = 1; i < size; i++)
-        {
-          if (abs(data[i] - 128) > max)
-            max = abs(data[i] - 128);
-        }
+  // 최대 진폭 찾기
+  for (i = 1; i < size; i++) {
+    if (abs(data[i] - 128) > max)
+      max = abs(data[i] - 128);
+  }
 
-        return max;
+  return max;
 }
 
 // 정규화
@@ -496,11 +485,9 @@ void write_harmonics()
 
   type = 1;
 
-  for (i = 0; i < num; i++)
-  {
+  for (i = 0; i < num; i++) {
     f = freq[i]; // 음정
-    for (index = 0, t = 0.0; index < length; index++, t += 1.0 / SamplesPerSec)
-    {
+    for (index = 0, t = 0.0; index < length; index++, t += 1.0 / SamplesPerSec) {
       waveformData[length * i + index] = Harmonics(type, f, t);
     }
   }
