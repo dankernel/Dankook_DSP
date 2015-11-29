@@ -21,7 +21,7 @@ SamplesPerSec	wave.cpp	/^  long SamplesPerSec;$/;"	m	struct:audio	file:
 WaveToPCM	wave.cpp	/^unsigned char* WaveToPCM(char* name, long* data_size)$/;"	f
 WriteWave	wave.cpp	/^int WriteWave(char *name,$/;"	f
 WriteWave2	wave.cpp	/^int WriteWave2(char *filename, RiffHeader R, FormatChunk F, DataChunk D)$/;"	f
-audio	wave.cpp	/^struct audio{$/;"	s	file:
+audio	wave.cpp	/^struct audio {$/;"	s	file:
 chunkID	wave.h	/^  ID chunkID; \/\/ RIFF, 식별자$/;"	m	struct:__anon2
 chunkID	wave.h	/^  ID chunkID; \/\/ASCII코드로 “data" (0x64617461 big-endian form). $/;"	m	struct:__anon5
 chunkID	wave.h	/^  ID chunkID; \/\/ASCII코드로 “fmt " (0x666d7420 big-endian form). $/;"	m	struct:__anon4
@@ -48,6 +48,7 @@ wChannels	wave.h	/^  unsigned short wChannels; \/\/ the number of audio channels
 wFormat	wave.h	/^  long wFormat;$/;"	m	struct:__anon2
 wFormatTag	wave.h	/^  short wFormatTag; \/\/ PCM = 1 , Values other than 1 indicate some form of compression $/;"	m	struct:__anon3
 waveformData	wave.h	/^  unsigned char *waveformData; \/\/ PCM 데이터$/;"	m	struct:__anon5
+write_audio	wave.cpp	/^int write_audio(struct audio *ap) $/;"	f
 write_do	wave.cpp	/^void write_do()$/;"	f
 write_mod_samplingrate	wave.cpp	/^long write_mod_samplingrate(struct audio *ap, float rate)$/;"	f
 write_mod_samplingrate	wave.cpp	/^void write_mod_samplingrate()$/;"	f

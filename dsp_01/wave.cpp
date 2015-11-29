@@ -1,10 +1,9 @@
 #include "wave.h"
 
-
 /*
  * Audio info
  */
-struct audio{
+struct audio {
 
   RiffHeader R;
   FormatChunk F;
@@ -379,15 +378,33 @@ int print_bin(struct audio *ap)
   PlayTime = (double)ap->D.chunkSize / 
     (ap->F.field.dwSamplesPerSec * ap->F.field.wChannels * ap->F.field.wBitsPerSample / 8);
 
+  if (ap == NULL)
+    return -1;
 
   waveformDataSize = (long)(PlayTime * ap->SamplesPerSec * ap->F.field.wChannels * (ap->F.field.wBitsPerSample / 8));
-
 
   for (int i = 0; i < waveformDataSize; i++) {
     printf("%d \n", ap->D.waveformData[i]);
   }
 
+  return 0;
 }
 
+int write_audio(struct audio *ap) 
+{
+  int ret = 0;
+  char new_file[1024] = "new_";
 
+  if (ap == NULL)
+    return -1;
+
+  strcat(new_file, ap->path);
+
+  WriteWave(new_file, ap->F.field.wBitsPerSample, ap->SamplesPerSec, 
+      ap->F.field.wChannels, ap->D.waveformData, ap->D.chunkSize);
+
+  printf("[OK] audio write \n");
+
+  return 0;
+}
 

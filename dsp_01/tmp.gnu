@@ -16,7 +16,7 @@ set key top
 #Lable
 set ylabel "Hit rato(%)"
 set xlabel "Cache size(2^n)"
-set ytics 10
+# set ytics 10
 
 #yrange
 # set yrange [0:100]
