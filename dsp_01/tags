@@ -5,21 +5,22 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 CLIPPING	wave.h	9;"	d
+D	wave.cpp	/^  DataChunk D;$/;"	m	struct:audio	file:
 DataChunk	wave.h	/^} DataChunk;$/;"	t	typeref:struct:__anon5
+F	wave.cpp	/^  FormatChunk F;$/;"	m	struct:audio	file:
 FormatChunk	wave.h	/^} FormatChunk;$/;"	t	typeref:struct:__anon4
-GetMaxWaveform	wave.cpp	/^unsigned char GetMaxWaveform(unsigned char * data, long size)$/;"	f
 HEADER	wave.h	/^} HEADER;$/;"	t	typeref:struct:__anon1
-Harmonics	wave.cpp	/^unsigned char Harmonics(int type \/*  배음의 종류*\/, double f \/*  기음의 주파수 *\/, double t \/*  시간 변수 *\/)$/;"	f
 ID	wave.h	8;"	d
 LongToString	wave.cpp	/^void LongToString(long H_chunkID, char *chunkID)$/;"	f
-MemoryAllocationAndDataCopy	wave.cpp	/^unsigned char *MemoryAllocationAndDataCopy(unsigned char *waveformData, long chunkSize, int hSize)$/;"	f
 NoiseGen	wave.cpp	/^void NoiseGen(int *noise, long size, int range)$/;"	f
 PI	wave.h	10;"	d
+R	wave.cpp	/^  RiffHeader R;$/;"	m	struct:audio	file:
 ReadWave	wave.cpp	/^int ReadWave(char *filename, RiffHeader *R, FormatChunk *F, DataChunk *D) \/\/wav2dat$/;"	f
 RiffHeader	wave.h	/^} RiffHeader;$/;"	t	typeref:struct:__anon2
 WaveToPCM	wave.cpp	/^unsigned char* WaveToPCM(char* name, long* data_size)$/;"	f
 WriteWave	wave.cpp	/^int WriteWave(char *name,$/;"	f
 WriteWave2	wave.cpp	/^int WriteWave2(char *filename, RiffHeader R, FormatChunk F, DataChunk D)$/;"	f
+audio	wave.cpp	/^struct audio{$/;"	s	file:
 chunkID	wave.h	/^  ID chunkID; \/\/ RIFF, 식별자$/;"	m	struct:__anon2
 chunkID	wave.h	/^  ID chunkID; \/\/ASCII코드로 “data" (0x64617461 big-endian form). $/;"	m	struct:__anon5
 chunkID	wave.h	/^  ID chunkID; \/\/ASCII코드로 “fmt " (0x666d7420 big-endian form). $/;"	m	struct:__anon4
@@ -32,8 +33,11 @@ dwAvgBytesPerSec	wave.h	/^  unsigned long dwAvgBytesPerSec; \/\/전송률 (stere
 dwSamplesPerSec	wave.h	/^  unsigned long dwSamplesPerSec; \/\/샘플링 레이트$/;"	m	struct:__anon3
 field	wave.h	/^  subFormatChunk field;$/;"	m	struct:__anon4
 interpolation	wave.cpp	/^void interpolation(unsigned char *input, long size, unsigned char *output)$/;"	f
-main	main.cpp	/^int main(int argc, char** argv) {$/;"	f
+main	main.cpp	/^int main(int argc, char *argv[]) {$/;"	f
+path	wave.cpp	/^  char *path;$/;"	m	struct:audio	file:
+print_audio_info	wave.cpp	/^int print_audio_info(struct audio *ap)$/;"	f
 read	wave.cpp	/^void read()$/;"	f
+read_audio	wave.cpp	/^struct audio *read_audio (char *path)$/;"	f
 subFormatChunk	wave.h	/^} subFormatChunk;$/;"	t	typeref:struct:__anon3
 subsmapling2to1	wave.cpp	/^void subsmapling2to1(unsigned char *input, long size, unsigned char *output)$/;"	f
 wBitsPerSample	wave.h	/^  unsigned short wBitsPerSample; \/\/ bits per sample$/;"	m	struct:__anon3
@@ -43,8 +47,6 @@ wFormat	wave.h	/^  long wFormat;$/;"	m	struct:__anon2
 wFormatTag	wave.h	/^  short wFormatTag; \/\/ PCM = 1 , Values other than 1 indicate some form of compression $/;"	m	struct:__anon3
 waveformData	wave.h	/^  unsigned char *waveformData; \/\/ PCM 데이터$/;"	m	struct:__anon5
 write_do	wave.cpp	/^void write_do()$/;"	f
-write_filter_meanfilter	wave.cpp	/^void write_filter_meanfilter()$/;"	f
-write_harmonics	wave.cpp	/^void write_harmonics()$/;"	f
+write_mod_samplingrate	wave.cpp	/^struct audio *write_mod_samplingrate(struct audio *ap)$/;"	f
 write_mod_samplingrate	wave.cpp	/^void write_mod_samplingrate()$/;"	f
 write_noise	wave.cpp	/^void write_noise()$/;"	f
-write_normalize	wave.cpp	/^void write_normalize()$/;"	f

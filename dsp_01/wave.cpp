@@ -1,5 +1,19 @@
 #include "wave.h"
 
+
+/*
+ * Audio info
+ */
+struct audio{
+
+  RiffHeader R;
+  FormatChunk F;
+  DataChunk D;
+  
+  char *path;
+
+};
+
 void LongToString(long H_chunkID, char *chunkID)
 {
   long MASK = 0x000000FF;
@@ -73,6 +87,7 @@ int ReadWave(char *filename, RiffHeader *R, FormatChunk *F, DataChunk *D) //wav2
       fseek(fp, (long)H.chunkSize, SEEK_CUR);
     }
   }
+
   fclose(fp);
   return 1;
 }
@@ -107,9 +122,9 @@ void read()
 
   PlayTime = (double)D.chunkSize / (F.field.dwSamplesPerSec * F.field.wChannels * F.field.wBitsPerSample / 8);
 
-  printf("\n[] Data chunk size = %d", D.chunkSize);
+  printf("\n[] Data chunk size = %ld", D.chunkSize);
   printf("\n[] The number of channel = %d (mono = 1, stereo = 2)", F.field.wChannels);
-  printf("\n[] Sampling rate = %d [Hz or samples/sec]", F.field.dwSamplesPerSec);
+  printf("\n[] Sampling rate = %ld [Hz or samples/sec]", F.field.dwSamplesPerSec);
   printf("\n[] Sample resolution = %d [bits/sample]", F.field.wBitsPerSample);
   printf("\n[] Play time = %lf [sec]\n", PlayTime);
 }
@@ -202,7 +217,7 @@ void write_do()
     waveformData[index] = (int)(128.0 + 100.0 * sin(2.0 * PI * f * t) + 0.5);
   }
 
-  printf("%10ld %10ld\n", index, f);
+  printf("%10ld %10lf\n", index, f);
   WriteWave(name, BitsPerSample, SamplesPerSec, Channels, waveformData, waveformDataSize);
 
   free(waveformData);
@@ -312,186 +327,52 @@ void write_noise()
   free(noise);
 }
 
-unsigned char *MemoryAllocationAndDataCopy(unsigned char *waveformData, long chunkSize, int hSize)
+struct audio *read_audio (char *path)
 {
-  unsigned char *tmp = NULL;
-  int i;
+  struct audio *ap;
 
-  tmp = (unsigned char *) malloc(sizeof(char) * chunkSize);
+  ap = (struct audio*)malloc(sizeof(struct audio));
+  ap->path = (char*)malloc(sizeof(char) * 1024);
 
-  for (i = 0; i < chunkSize; i++) {
-    tmp[i] = waveformData[i];
-  }
+  strcpy(ap->path, path);
 
+  ReadWave(path, &ap->R, &ap->F, &ap->D);
 
-  return tmp;
-}
+  return ap;
 
-// 노이즈 제거 (mean filter)
-void write_filter_meanfilter()
-{
-  // input 은 노이즈 섞인 파일
-  char name_in[100] = "test_demo+noise.wav";
-  char name_out[100] = "test_demo+noise+meanfilter.wav";
-  char name_out2[100] = "test_demo+noise+gaussian.wav";
-
-  long i;
-  unsigned char *filter;
-  int temp, filterSize, hSize, k;
-  // 가우시안 필터 (size 5)
-  double gfilter[5] = { 0.0625, 0.25, 0.375, 0.25, 0.0625 };
-  double tmp;
-
-  RiffHeader R;
-  FormatChunk F;
-  DataChunk D;
-
-  filterSize = 5; // 필터 크기는 홀수만 가능
-  hSize = (int)(filterSize / 2);
-  ReadWave(name_in, &R, &F, &D);
-
-  // 메모리 복사
-  filter = MemoryAllocationAndDataCopy(D.waveformData, D.chunkSize, hSize);
-
-  for (i = 0; i < D.chunkSize; i++) {
-    temp = 0;
-    for (k = -hSize; k <= hSize; k++) {
-      temp += (filter[i + k] - 128);
-    }
-    D.waveformData[i] = CLIPPING(temp / filterSize + 128);
-  }
-
-  WriteWave(name_out, F.field.wBitsPerSample, F.field.dwSamplesPerSec, F.field.wChannels, D.waveformData, D.chunkSize);
-
-  // free(filter - hSize);
-
-  // gaussian 필터링
-  hSize = (int)(sizeof(sizeof(gfilter) / sizeof(double))) / 2;
-  filter = MemoryAllocationAndDataCopy(D.waveformData, D.chunkSize, hSize);
-
-  for (i = 0; i < D.chunkSize; i++) {
-    tmp = 0.0;
-    for (k = -hSize; k <= hSize; k++) {
-      tmp += ((filter[i + k] - 128) * (gfilter[k + hSize]));
-    }
-    D.waveformData[i] = CLIPPING((int)tmp + 128);
-  }
-
-  WriteWave(name_out2, F.field.wBitsPerSample, F.field.dwSamplesPerSec, F.field.wChannels, D.waveformData, D.chunkSize);
-
-  // free(filter - hSize);
-}
-
-unsigned char GetMaxWaveform(unsigned char * data, long size)
-{
-  long i;
-  unsigned char max;
-  max = abs(data[0] - 128); // max 값 초기화
-
-  // 최대 진폭 찾기
-  for (i = 1; i < size; i++) {
-    if (abs(data[i] - 128) > max)
-      max = abs(data[i] - 128);
-  }
-
-  return max;
-}
-
-// 정규화
-void write_normalize()
-{
-  char name_in[100] = "headset2.wav";
-  char name_out[100] = "test_normalize.wav";
-
-  long i;
-  unsigned char * data, maxvalue;
-  double scale;
-
-  RiffHeader R;
-  FormatChunk F;
-  DataChunk D;
-
-  ReadWave(name_in, &R, &F, &D);
-  data = D.waveformData;
-  maxvalue = GetMaxWaveform(data, D.chunkSize);
-  scale = (double)128 / maxvalue; // 증폭량 결정
-  printf("normalization x%.1lf (maximum waveform level %d)\n", scale, maxvalue);
-
-  // 증폭
-  for (i = 0; i < D.chunkSize; i++)
-  {
-    data[i] = CLIPPING((data[i] - 128) * scale + 128.0);
-  }
-
-  WriteWave(name_out, F.field.wBitsPerSample, F.field.dwSamplesPerSec, F.field.wChannels, data, D.chunkSize);
-}
-
-// 기음과 배음을 발생시키는 함수 Harmonics()
-unsigned char Harmonics(int type /*  배음의 종류*/, double f /*  기음의 주파수 */, double t /*  시간 변수 */)
-{
-  double value;
-
-  switch (type)
-  {
-    case 0: // 기음으로 구성
-      value = 50.0 * sin(2.0 * PI * f * t);
-      break;
-    case 1: // 2~5배의 주파수를 가진 배음을 첨가한 소리로 구성
-      value = 50.0 * sin(2.0 * PI * f * t) +
-        30.0 * sin(2.0 * PI * (2.0 * f) * t) +
-        20.0 * sin(2.0 * PI * (3.0 * f) * t) +
-        10.0 * sin(2.0 * PI * (4.0 * f) * t) +
-        5.0 * sin(2.0 * PI * (5.0 * f) * t);
-      break;
-    case 2: // 2, 4, 6, 8배의 주파수를 가진 배음을 첨가한 소리로 구성
-      value = 50.0 * sin(2.0 * PI * f * t) +
-        30.0 * sin(2.0 * PI * (2.0 * f) * t) +
-        20.0 * sin(2.0 * PI * (4.0 * f) * t) +
-        10.0 * sin(2.0 * PI * (6.0 * f) * t) +
-        5.0 * sin(2.0 * PI * (8.0 * f) * t);
-      break;
-    default:
-      value = 50.0 * sin(2.0 * PI * f * t);
-      break;
-  }
-  return ((unsigned char)(value + 128.0)); // 128을 더해 출력
 }
 
 
-// 화음
-void write_harmonics()
+
+int print_audio_info(struct audio *ap)
 {
-  char name[100] = "test_harmonics.wav";
+  DataChunk D = ap->D;
+  FormatChunk F = ap->F;
+  double PlayTime;
 
-  //도, 레, 미, 파, 솔, 라, 시, 도의 주파수
-  static double freq[] = {
-    264.0, 297.0, 330.0, 352.0, 396.0, 440.0, 495.0, 528.0
-  };
+  PlayTime = (double)D.chunkSize / (F.field.dwSamplesPerSec * F.field.wChannels * F.field.wBitsPerSample / 8);
 
-  long SamplesPerSec = 11025; // 11kHz sampling
-  short BitsPerSample = 8; // 8bits
-  short Channels = 1; // mono
-  double SamplesPeriod = 1 / SamplesPerSec;
-  double PlayTime = 1; // 한 음정은 1초씩
-  long waveformDataSize;
-  unsigned char *waveformData;
-  double t, f;
-  long index, length;
-  int i, type, num = 8; // 8개의 음정
+  printf("\n[] Data chunk size = %ld", D.chunkSize);
+  printf("\n[] The number of channel = %d (mono = 1, stereo = 2)", F.field.wChannels);
+  printf("\n[] Sampling rate = %ld [Hz or samples/sec]", F.field.dwSamplesPerSec);
+  printf("\n[] Sample resolution = %d [bits/sample]", F.field.wBitsPerSample);
+  printf("\n[] Play time = %lf [sec]\n", PlayTime);
+}
 
-  length = (long)(PlayTime * SamplesPerSec * Channels * (BitsPerSample / 8));
-  waveformDataSize = length * num;
-  waveformData = (unsigned char *)malloc(sizeof(char)*waveformDataSize);
+struct audio *write_mod_samplingrate(struct audio *ap)
+{
+  long SamplesPerSec;
+  char name_input[100] = "headset2.wav";
+  char name_half[100] = "half.wav";
+  char name_double[100] = "double.wav";
 
-  type = 1;
+  FormatChunk F = ap->F;
+  DataChunk D = ap->D;
 
-  for (i = 0; i < num; i++) {
-    f = freq[i]; // 음정
-    for (index = 0, t = 0.0; index < length; index++, t += 1.0 / SamplesPerSec) {
-      waveformData[length * i + index] = Harmonics(type, f, t);
-    }
-  }
+  if (ap == NULL)
+    return NULL;
 
-  WriteWave(name, BitsPerSample, SamplesPerSec, Channels, waveformData, waveformDataSize);
-  free(waveformData);
+  SamplesPerSec = F.field.dwSamplesPerSec / 2;
+
+  WriteWave(name_double, F.field.wBitsPerSample, SamplesPerSec, F.field.wChannels, D.waveformData, D.chunkSize);
 }
