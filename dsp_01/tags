@@ -17,6 +17,7 @@ PI	wave.h	10;"	d
 R	wave.cpp	/^  RiffHeader R;$/;"	m	struct:audio	file:
 ReadWave	wave.cpp	/^int ReadWave(char *filename, RiffHeader *R, FormatChunk *F, DataChunk *D) \/\/wav2dat$/;"	f
 RiffHeader	wave.h	/^} RiffHeader;$/;"	t	typeref:struct:__anon2
+SamplesPerSec	wave.cpp	/^  long SamplesPerSec;$/;"	m	struct:audio	file:
 WaveToPCM	wave.cpp	/^unsigned char* WaveToPCM(char* name, long* data_size)$/;"	f
 WriteWave	wave.cpp	/^int WriteWave(char *name,$/;"	f
 WriteWave2	wave.cpp	/^int WriteWave2(char *filename, RiffHeader R, FormatChunk F, DataChunk D)$/;"	f
@@ -36,6 +37,7 @@ interpolation	wave.cpp	/^void interpolation(unsigned char *input, long size, uns
 main	main.cpp	/^int main(int argc, char *argv[]) {$/;"	f
 path	wave.cpp	/^  char *path;$/;"	m	struct:audio	file:
 print_audio_info	wave.cpp	/^int print_audio_info(struct audio *ap)$/;"	f
+print_bin	wave.cpp	/^int print_bin(struct audio *ap)$/;"	f
 read	wave.cpp	/^void read()$/;"	f
 read_audio	wave.cpp	/^struct audio *read_audio (char *path)$/;"	f
 subFormatChunk	wave.h	/^} subFormatChunk;$/;"	t	typeref:struct:__anon3
@@ -47,6 +49,6 @@ wFormat	wave.h	/^  long wFormat;$/;"	m	struct:__anon2
 wFormatTag	wave.h	/^  short wFormatTag; \/\/ PCM = 1 , Values other than 1 indicate some form of compression $/;"	m	struct:__anon3
 waveformData	wave.h	/^  unsigned char *waveformData; \/\/ PCM 데이터$/;"	m	struct:__anon5
 write_do	wave.cpp	/^void write_do()$/;"	f
-write_mod_samplingrate	wave.cpp	/^struct audio *write_mod_samplingrate(struct audio *ap)$/;"	f
+write_mod_samplingrate	wave.cpp	/^long write_mod_samplingrate(struct audio *ap, float rate)$/;"	f
 write_mod_samplingrate	wave.cpp	/^void write_mod_samplingrate()$/;"	f
 write_noise	wave.cpp	/^void write_noise()$/;"	f

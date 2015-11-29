@@ -10,6 +10,7 @@ struct audio{
   FormatChunk F;
   DataChunk D;
   
+  long SamplesPerSec;
   char *path;
 
 };
@@ -339,10 +340,7 @@ struct audio *read_audio (char *path)
   ReadWave(path, &ap->R, &ap->F, &ap->D);
 
   return ap;
-
 }
-
-
 
 int print_audio_info(struct audio *ap)
 {
@@ -352,6 +350,7 @@ int print_audio_info(struct audio *ap)
 
   PlayTime = (double)D.chunkSize / (F.field.dwSamplesPerSec * F.field.wChannels * F.field.wBitsPerSample / 8);
 
+  printf("\n===== %s =====", ap->path);
   printf("\n[] Data chunk size = %ld", D.chunkSize);
   printf("\n[] The number of channel = %d (mono = 1, stereo = 2)", F.field.wChannels);
   printf("\n[] Sampling rate = %ld [Hz or samples/sec]", F.field.dwSamplesPerSec);
@@ -359,20 +358,36 @@ int print_audio_info(struct audio *ap)
   printf("\n[] Play time = %lf [sec]\n", PlayTime);
 }
 
-struct audio *write_mod_samplingrate(struct audio *ap)
+long write_mod_samplingrate(struct audio *ap, float rate)
 {
-  long SamplesPerSec;
-  char name_input[100] = "headset2.wav";
-  char name_half[100] = "half.wav";
-  char name_double[100] = "double.wav";
-
-  FormatChunk F = ap->F;
-  DataChunk D = ap->D;
-
+  long ret;
   if (ap == NULL)
-    return NULL;
+    return 0;
 
-  SamplesPerSec = F.field.dwSamplesPerSec / 2;
+  ret = ap->SamplesPerSec = ap->F.field.dwSamplesPerSec * rate;
 
-  WriteWave(name_double, F.field.wBitsPerSample, SamplesPerSec, F.field.wChannels, D.waveformData, D.chunkSize);
+  // WriteWave(name_double, F.field.wBitsPerSample, ap->SamplesPerSec, F.field.wChannels, D.waveformData, D.chunkSize);
+  
+  return ret;
+
 }
+
+int print_bin(struct audio *ap)
+{
+  long waveformDataSize = 0;
+  double PlayTime;
+  PlayTime = (double)ap->D.chunkSize / 
+    (ap->F.field.dwSamplesPerSec * ap->F.field.wChannels * ap->F.field.wBitsPerSample / 8);
+
+
+  waveformDataSize = (long)(PlayTime * ap->SamplesPerSec * ap->F.field.wChannels * (ap->F.field.wBitsPerSample / 8));
+
+
+  for (int i = 0; i < waveformDataSize; i++) {
+    printf("%d \n", ap->D.waveformData[i]);
+  }
+
+}
+
+
+
