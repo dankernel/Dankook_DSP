@@ -18,6 +18,8 @@ struct audio *copy_audio(struct audio *ap)
 {
   struct audio *new_ap = NULL;
 
+  char new_file[1024] = "new_";
+
   if (ap == NULL)
     return NULL;
   
@@ -29,8 +31,8 @@ struct audio *copy_audio(struct audio *ap)
   new_ap->D = ap->D;
 
   new_ap->SamplesPerSec = ap->F.field.dwSamplesPerSec;
-  printf("Copy : SamplesPerSec = %ld \n", ap->F.field.dwSamplesPerSec);
-  strcpy(new_ap->path, ap->path);
+  strcat(new_file, ap->path);
+  strcpy(new_ap->path, new_file);
 
   return new_ap;
 }
@@ -198,8 +200,6 @@ int WriteWave(char *name,
   F.field.dwSamplesPerSec = SamplesPerSec;
   F.field.wBitsPerSample = BitsPerSample;
   F.field.wBlockAlign = Channel*(BitsPerSample / 8);
-
-  printf("Write : dwSamplesPerSec : %ld \n", F.field.dwSamplesPerSec);
 
   D.chunkID = 0x61746164;   // "data"
   D.chunkSize = waveform_data_size;
@@ -423,12 +423,8 @@ int write_audio(struct audio *ap)
   if (ap == NULL)
     return -1;
 
-  strcat(new_file, ap->path);
-
-  WriteWave(new_file, ap->F.field.wBitsPerSample, ap->SamplesPerSec, 
+  WriteWave(ap->path, ap->F.field.wBitsPerSample, ap->SamplesPerSec, 
       ap->F.field.wChannels, ap->D.waveformData, ap->D.chunkSize);
-
-  printf("[OK] audio write \n");
 
   return 0;
 }
@@ -453,6 +449,5 @@ struct audio *Decimation(struct audio *ap)
       tmp->D.waveformData[(i/2)+1] = ap->D.waveformData[i+1];
   }
 
-  printf("[OK] Decimation \n");
   return tmp;
 }
