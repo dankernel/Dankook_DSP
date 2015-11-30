@@ -30,13 +30,13 @@ typedef struct {
 } subFormatChunk;
 
 typedef struct {
-  ID chunkID; //ASCII코드로 “fmt " (0x666d7420 big-endian form). 
+  ID chunkID; //ASCII코드로 "fmt" (0x666d7420 big-endian form). 
   long chunkSize; //포맷 청크의 크기 (byte), wFormat 이 1일때 (PCM 일때)는 16
   subFormatChunk field;
 } FormatChunk;
 
 typedef struct {
-  ID chunkID; //ASCII코드로 “data" (0x64617461 big-endian form). 
+  ID chunkID; //ASCII코드로 "data" (0x64617461 big-endian form). 
   long chunkSize; //데이터 청크에 포함된 데이터의 크기
   unsigned char *waveformData; // PCM 데이터
 } DataChunk;

@@ -13,17 +13,18 @@ int main(int argc, char *argv[]) {
 
   /* Read */
   ap = read_audio(argv[1]);
+  printf("[OK] Read \n");
 
-  /* Print */
+  /* Print info */
   print_audio_info(ap);
 
-  ret = write_mod_samplingrate(ap, 2);
-  printf("Old Samples Per sec : %ld \n", ret);
+  /* Sampling rate  */
+  struct audio *new_ap;
+  new_ap = Decimation(ap);
+  write_audio(new_ap);
+  print_audio_info(new_ap);
 
-  // print_bin(ap);
-
-  write_audio(ap);
-  // WriteWave(name_half, F.field.wBitsPerSample, SamplesPerSec, F.field.wChannels, D.waveformData, D.chunkSize);
+  printf("[OK] End\n");
 
   return 0;
 }

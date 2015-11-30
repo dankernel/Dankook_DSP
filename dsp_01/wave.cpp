@@ -14,6 +14,27 @@ struct audio {
 
 };
 
+struct audio *copy_audio(struct audio *ap)
+{
+  struct audio *new_ap = NULL;
+
+  if (ap == NULL)
+    return NULL;
+  
+  new_ap = (struct audio*)malloc(sizeof(struct audio));
+
+  new_ap->R = ap->R;
+  new_ap->F = ap->F;
+  new_ap->F.field = ap->F.field;
+  new_ap->D = ap->D;
+
+  new_ap->SamplesPerSec = ap->F.field.dwSamplesPerSec;
+  printf("Copy : SamplesPerSec = %ld \n", ap->F.field.dwSamplesPerSec);
+  strcpy(new_ap->path, ap->path);
+
+  return new_ap;
+}
+
 void LongToString(long H_chunkID, char *chunkID)
 {
   long MASK = 0x000000FF;
@@ -177,6 +198,8 @@ int WriteWave(char *name,
   F.field.dwSamplesPerSec = SamplesPerSec;
   F.field.wBitsPerSample = BitsPerSample;
   F.field.wBlockAlign = Channel*(BitsPerSample / 8);
+
+  printf("Write : dwSamplesPerSec : %ld \n", F.field.dwSamplesPerSec);
 
   D.chunkID = 0x61746164;   // "data"
   D.chunkSize = waveform_data_size;
@@ -355,6 +378,8 @@ int print_audio_info(struct audio *ap)
   printf("\n[] Sampling rate = %ld [Hz or samples/sec]", F.field.dwSamplesPerSec);
   printf("\n[] Sample resolution = %d [bits/sample]", F.field.wBitsPerSample);
   printf("\n[] Play time = %lf [sec]\n", PlayTime);
+
+  return 0;
 }
 
 long write_mod_samplingrate(struct audio *ap, float rate)
@@ -408,3 +433,26 @@ int write_audio(struct audio *ap)
   return 0;
 }
 
+struct audio *Decimation(struct audio *ap)
+{
+  if(ap->F.field.wChannels == 1)
+    return NULL;
+
+  int i=0;
+  struct audio *tmp = copy_audio(ap);
+
+  if (tmp == NULL)
+    return NULL;
+
+  tmp->R.chunkSize -= ap->D.chunkSize / 2;
+  tmp->F.field.wChannels = 1;
+  tmp->D.chunkSize /= 2;
+
+  for(i=0; i < ap->D.chunkSize; i+=4) {
+      tmp->D.waveformData[i/2] = ap->D.waveformData[i];
+      tmp->D.waveformData[(i/2)+1] = ap->D.waveformData[i+1];
+  }
+
+  printf("[OK] Decimation \n");
+  return tmp;
+}
