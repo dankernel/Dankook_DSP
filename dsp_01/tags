@@ -10,9 +10,12 @@ DataChunk	wave.h	/^} DataChunk;$/;"	t	typeref:struct:__anon5
 Decimation	wave.cpp	/^struct audio *Decimation(struct audio *ap)$/;"	f
 F	wave.cpp	/^  FormatChunk F;$/;"	m	struct:audio	file:
 FormatChunk	wave.h	/^} FormatChunk;$/;"	t	typeref:struct:__anon4
+GB	main.cpp	9;"	d	file:
 HEADER	wave.h	/^} HEADER;$/;"	t	typeref:struct:__anon1
 ID	wave.h	8;"	d
+KB	main.cpp	7;"	d	file:
 LongToString	wave.cpp	/^void LongToString(long H_chunkID, char *chunkID)$/;"	f
+MB	main.cpp	8;"	d	file:
 NoiseGen	wave.cpp	/^void NoiseGen(int *noise, long size, int range)$/;"	f
 PI	wave.h	10;"	d
 R	wave.cpp	/^  RiffHeader R;$/;"	m	struct:audio	file:
@@ -37,6 +40,7 @@ dwSamplesPerSec	wave.h	/^  unsigned long dwSamplesPerSec; \/\/샘플링 레이�
 field	wave.h	/^  subFormatChunk field;$/;"	m	struct:__anon4
 interpolation	wave.cpp	/^void interpolation(unsigned char *input, long size, unsigned char *output)$/;"	f
 main	main.cpp	/^int main(int argc, char *argv[]) {$/;"	f
+mp3_encode	main.cpp	/^char *mp3_encode(char *path) $/;"	f
 path	wave.cpp	/^  char *path;$/;"	m	struct:audio	file:
 print_audio_info	wave.cpp	/^int print_audio_info(struct audio *ap)$/;"	f
 print_bin	wave.cpp	/^int print_bin(struct audio *ap)$/;"	f

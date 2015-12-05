@@ -1,0 +1,41 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ALL_OBJS	Makefile	/^ALL_OBJS = \\$/;"	m
+COMMON_INCLUDE	Makefile	/^COMMON_INCLUDE = .\/ $/;"	m
+DEBUG_FCC	aviutil.c	/^static char DEBUG_FCC[4];$/;"	v	file:
+DETECT_SIZE	util.c	10;"	d	file:
+EXE	Makefile	/^EXE = aviparser$/;"	m
+GET_FCC	aviutil.c	/^unsigned int GET_FCC (FILE *fp) {$/;"	f
+GET_FCC1	aviutil.c	/^unsigned int GET_FCC1 (FILE *fp) {$/;"	f
+GET_TCC	aviutil.c	/^unsigned int GET_TCC (FILE *fp) {$/;"	f
+MKBETAG	avidec.c	7;"	d	file:
+MKTAG	avidec.c	6;"	d	file:
+PUT_FCC	aviutil.c	9;"	d	file:
+PUT_FCCN	aviutil.c	10;"	d	file:
+PUT_TCC	aviutil.c	11;"	d	file:
+REGISTER_DEMUXER	util.c	5;"	d	file:
+avContext	main-test.c	/^AVFormatContext avContext;$/;"	v
+av_open_input_file	util.c	/^int av_open_input_file(AVFormatContext *ic_ptr)$/;"	f
+av_probe_input_format	util.c	/^static AVInputFormat *av_probe_input_format(AVProbeData *pd)$/;"	f	file:
+av_read_header_file	util.c	/^int av_read_header_file(AVFormatContext *ic_ptr)$/;"	f
+av_register_all	util.c	/^void av_register_all(void)$/;"	f
+av_register_input_format	util.c	/^void av_register_input_format(AVInputFormat *format)$/;"	f
+avi_demuxer	avidec.c	/^AVInputFormat avi_demuxer = {$/;"	v
+avi_headers	avidec.c	/^static const char avi_headers[][8] = {$/;"	v	file:
+avi_load_index	avidec.c	/^static int avi_load_index(struct AVFormatContext *s)$/;"	f	file:
+avi_probe	avidec.c	/^static int avi_probe(AVProbeData *p)$/;"	f	file:
+avi_read_header	avidec.c	/^static int avi_read_header(struct AVFormatContext *s)$/;"	f	file:
+avi_read_idx1	avidec.c	/^static int avi_read_idx1(AVFormatContext *s, int size)$/;"	f	file:
+fcc_to_char	aviutil.c	/^char *fcc_to_char (unsigned int fcc) {$/;"	f
+fileFtell	file.c	/^int fileFtell(FILE *fp)$/;"	f
+fileGetByte	file.c	/^char fileGetByte(FILE *fp)$/;"	f
+fileRead	file.c	/^int fileRead(FILE *fp, char *buf, int sz)$/;"	f
+fileSeek	file.c	/^int fileSeek(FILE *fp, int offset, int origin)$/;"	f
+fileSkip	file.c	/^int fileSkip(FILE *fp, int sz)$/;"	f
+first_iformat	util.c	/^AVInputFormat *first_iformat = NULL;$/;"	v
+main	main-test.c	/^int main(int argc, char **argv)$/;"	f
+tcc_to_char	aviutil.c	/^char *tcc_to_char (unsigned int tcc) {$/;"	f

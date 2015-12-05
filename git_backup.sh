@@ -21,6 +21,7 @@ if [ $WORK = 1 ]; then
   echo -e '\E[34m'"\033[1m$work\033[0m"
 else
   echo -e '\E[34m'"\033[1m[FAIL]45M\033[0m"
+  find -size +45M -not -path "./" | grep -q "\." && WORK=0
 fi
 
 
