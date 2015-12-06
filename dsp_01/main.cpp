@@ -1,13 +1,31 @@
 #include <iostream>
 #include <string.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <wait.h>
 
 #include "wave.cpp"
+#include "lame/main.c"
 
 #define KB 1024
 #define MB KB * 1024
 #define GB MB * 1024
+
+char *tmp_dkdk(int argc, char *argv[]) 
+{
+  // lame_global_flags gf;
+
+  /* initialize libmp3lame */
+  // laem_init(&gf);
+
+  if(argc==1) {
+    printf("[Fail] Arg error! \n");
+  }
+
+  return NULL;
+
+
+}
 
 char *mp3_encode(char *path) 
 {
@@ -41,7 +59,10 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  mp3_encode(argv[1]);
+  /* Test */
+  tmp_dkdk(argc, argv);
+
+  // mp3_encode(argv[1]);
   
 
   /* Read */
@@ -70,4 +91,6 @@ int main(int argc, char *argv[]) {
 fail:
   printf("[Fail]\n");
   return 0;
+
 }
+
