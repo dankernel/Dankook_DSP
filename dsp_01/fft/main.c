@@ -22,17 +22,10 @@ struct twinddle_factor *FFT_Calc(
   int i = 0;
 	struct twinddle_factor *t = NULL;
 
-  printf(">>>> 111 Loop Size : %d, H_%d \n", size, *index);
-  tf_print(input, size); 
-
   /* Return */
   if (size == 1) {
 
-    printf(">>>> End! 2개 : size : %d, H_%d] \n", size, *index);
     tf_copy(&result[(*index)], &input[0]);
-
-    printf("bb END input : %lf %lf\n", input[0].real, input[0].imag);
-    printf("bb END result : %lf %lf\n", result[(*index)].real, result[(*index)].imag);
     /* tf_print(input, size);  */
 
     *(index) = *(index) + 1;
@@ -52,9 +45,6 @@ struct twinddle_factor *FFT_Calc(
 		t[i + size / 2].imag = (input[i + size / 2].real - input[i].real)*sin(degree*i) + (input[i].imag - input[i + size / 2].imag)*cos(degree*i);
 	}
 
-  printf(">>>> 222 Loop Size : %d, H_%d \n", size, *index);
-  tf_print(t, size); 
-
   FFT_Calc(result, &t[0], size/2, inverse, index);
   FFT_Calc(result, &t[size/2], size/2, inverse, index);
   
@@ -69,7 +59,7 @@ int tf_copy(struct twinddle_factor *a, struct twinddle_factor *b)
   return 0;
 }
 
-struct twinddle_factor *tf_init(int *array, int size)
+struct twinddle_factor *tf_init(double *array, int size)
 {
   int i = 0;
 
@@ -142,12 +132,23 @@ int main(int argc, const char *argv[])
   struct twinddle_factor *tf = NULL;
   struct twinddle_factor *result = NULL;
 
-  tf = tf_init(array, size);
+
+  int i=0;
+  double tmp[8]={0,};
+  
+  for(i=0;i<8;i++)
+  {
+    tmp[i]=sin(PI/4*i);
+    printf("%lf\n", tmp[i]);
+  }
+ 
+  /* tf = tf_init(array, size); */
+  tf = tf_init(tmp, size);
 
   tf_print(tf, size);
 
   printf("===== \n\n");
-  tf = Main_FFT(tf, size, 1);
+  tf = Main_FFT(tf, 8, 1);
   tf_print(tf, size);
   
   return 0;

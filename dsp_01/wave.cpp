@@ -238,6 +238,7 @@ void write_do()
   for (index = 0; index < waveformDataSize; index++, t += 1.0 / SamplesPerSec) {
     f = freq[(int)(index / 22050)];  // 도 ~
     waveformData[index] = (int)(128.0 + 100.0 * sin(2.0 * PI * f * t) + 0.5);
+    printf("%02X \n", waveformData[index]);
   }
 
   printf("%10ld %10lf\n", index, f);
@@ -360,6 +361,7 @@ struct audio *read_audio (char *path)
   strcpy(ap->path, path);
 
   ReadWave(path, &ap->R, &ap->F, &ap->D);
+  ap->SamplesPerSec = ap->F.field.dwSamplesPerSec;
 
   return ap;
 }
@@ -396,7 +398,21 @@ long write_mod_samplingrate(struct audio *ap, float rate)
 
 }
 
-int print_bin(struct audio *ap)
+long get_waveformDataSize(struct audio *ap)
+{
+  if (ap == NULL)
+    return 0;
+
+  double PlayTime;
+  PlayTime = (double)ap->D.chunkSize / 
+    (ap->F.field.dwSamplesPerSec * ap->F.field.wChannels * ap->F.field.wBitsPerSample / 8);
+
+  long waveformDataSize = 0;
+  waveformDataSize = (long)(PlayTime * ap->SamplesPerSec * ap->F.field.wChannels * (ap->F.field.wBitsPerSample / 8));
+  return waveformDataSize;
+}
+
+int *get_bin(struct audio *ap)
 {
   long waveformDataSize = 0;
   double PlayTime;
@@ -404,15 +420,22 @@ int print_bin(struct audio *ap)
     (ap->F.field.dwSamplesPerSec * ap->F.field.wChannels * ap->F.field.wBitsPerSample / 8);
 
   if (ap == NULL)
-    return -1;
+    return NULL;
 
   waveformDataSize = (long)(PlayTime * ap->SamplesPerSec * ap->F.field.wChannels * (ap->F.field.wBitsPerSample / 8));
+  // printf("tmptmp : %ld\n", ap->SamplesPerSec * ap->F.field.wChannels * (ap->F.field.wBitsPerSample / 8));
+  printf("Array size : %ld\n", waveformDataSize);
+
+  int *array = NULL;
+  array = (int *)malloc(sizeof(array) * waveformDataSize);
 
   for (int i = 0; i < waveformDataSize; i++) {
-    printf("%d \n", ap->D.waveformData[i]);
+    array[i] = ap->D.waveformData[i];
+    // printf("%d \n", ap->D.waveformData[i]);
   }
+  printf("Print bin end\n");
 
-  return 0;
+  return array;
 }
 
 int write_audio(struct audio *ap) 

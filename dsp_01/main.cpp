@@ -5,7 +5,7 @@
 #include <wait.h>
 
 #include "wave.cpp"
-#include "lame/main.c"
+#include "fft/fft.c"
 
 #define KB 1024
 #define MB KB * 1024
@@ -23,8 +23,6 @@ char *tmp_dkdk(int argc, char *argv[])
   }
 
   return NULL;
-
-
 }
 
 char *mp3_encode(char *path) 
@@ -45,9 +43,7 @@ char *mp3_encode(char *path)
     waitpid(ret, &status, WNOHANG);
   }
   printf("pe\n");
-
 }
-
 
 int main(int argc, char *argv[]) {
   
@@ -60,23 +56,35 @@ int main(int argc, char *argv[]) {
   }
 
   /* Test */
-  tmp_dkdk(argc, argv);
-
+  // tmp_dkdk(argc, argv);
   // mp3_encode(argv[1]);
-  
 
   /* Read */
-  // ap = read_audio(argv[1]);
-  // if (ap == NULL)
-    // goto fail;
+  ap = read_audio(argv[1]);
 
   /* Print info */
-  // print_audio_info(ap);
+  print_audio_info(ap);
+
+  /* Get wav array */
+  int *tmp = NULL;
+  tmp = get_bin(ap);
+
+  /* Make twinddle_factor struct */
+  int size = get_waveformDataSize(ap);
+  struct twinddle_factor *tf = NULL;
+  tf = tf_init(tmp, size);
+
+  /* RUN FFT */
+  tf = Main_FFT(tf, size, 1);
+  printf("=== END ===\n");
+
+  /* Print */
+  tf_print(tf, size);
 
   /* Decimation */
   // struct audio *new_ap;
   // if ((new_ap = Decimation(ap)) == NULL)
-  //   goto fail;
+  //  goto fail;
   //
   // if (write_audio(new_ap) < 0)
   //   goto fail;
@@ -86,10 +94,6 @@ int main(int argc, char *argv[]) {
 
   /* End */
   printf("[OK] End\n");
-  return 0;
-
-fail:
-  printf("[Fail]\n");
   return 0;
 
 }

@@ -172,6 +172,8 @@ F8type	lame/quantize-pvt.c	950;"	d	file:
 FALSE	lame/mpglib/mpg123.h	37;"	d
 FALSE	lame/util.h	20;"	d
 FFTOFFSET	lame/encoder.h	40;"	d
+FFT_Calc	fft/fft.c	/^struct twinddle_factor *FFT_Calc($/;"	f
+FFT_Calc	fft/main.c	/^struct twinddle_factor *FFT_Calc($/;"	f
 FFT_H	lame/fft.h	2;"	d
 FLOAT	lame/Dll/BladeMP3EncDLL.h	62;"	d
 FLOAT	lame/machine.h	/^	typedef float FLOAT;$/;"	t
@@ -346,6 +348,8 @@ M_PI	lame/mpglib/mpg123.h	9;"	d
 M_SQRT2	lame/mpglib/mpg123.h	12;"	d
 MachineIEEEDouble	lame/ieeefloat.c	/^MachineIEEEDouble(char* bytes)$/;"	f
 MachineIEEESingle	lame/ieeefloat.c	/^MachineIEEESingle(char* bytes)$/;"	f
+Main_FFT	fft/fft.c	/^struct twinddle_factor *Main_FFT(struct twinddle_factor *input, const int size, int inverse)$/;"	f
+Main_FFT	fft/main.c	/^struct twinddle_factor *Main_FFT(struct twinddle_factor *input, const int size, int inverse)$/;"	f
 Max	lame/util.h	85;"	d
 MaybeSwapBytes	lame/ieeefloat.c	/^MaybeSwapBytes(char* bytes, int nBytes)$/;"	f
 Min	lame/util.h	84;"	d
@@ -371,6 +375,8 @@ PBE_VERSION	lame/Dll/BladeMP3EncDLL.h	/^} BE_VERSION, *PBE_VERSION;			$/;"	t	typ
 PGM	lame/Makefile	/^   PGM = lame.exe$/;"	m
 PGM	lame/Makefile	/^PGM = lame$/;"	m
 PHBE_STREAM	lame/Dll/BladeMP3EncDLL.h	/^typedef		HBE_STREAM				*PHBE_STREAM;$/;"	t
+PI	fft/fft.c	4;"	d	file:
+PI	fft/main.c	4;"	d	file:
 PI	lame/util.h	31;"	d
 PI	lame/util.h	33;"	d
 PI	wave.h	10;"	d
@@ -542,6 +548,7 @@ __declspec	lame/Dll/BladeMP3EncDLL.c	/^__declspec(dllexport) BE_ERR	beEncodeChun
 __declspec	lame/Dll/BladeMP3EncDLL.c	/^__declspec(dllexport) BE_ERR	beInitStream(PBE_CONFIG pbeConfig, PDWORD dwSamples, PDWORD dwBufferSize, PHBE_STREAM phbeStream)$/;"	f
 __declspec	lame/Dll/BladeMP3EncDLL.c	/^__declspec(dllexport) BE_ERR beWriteVBRHeader(LPCSTR lpszFileName)$/;"	f
 __declspec	lame/Dll/BladeMP3EncDLL.c	/^__declspec(dllexport) VOID		beVersion(PBE_VERSION pbeVersion)$/;"	f
+_main	fft/fft.c	/^int _main(int argc, const char *argv[])$/;"	f
 _main	lame/main.c	/^int _main(int argc, char **argv)$/;"	f
 a	lame/doc/html/switchs.html	/^  <dt><strong>* <kbd>-a<\/kbd><a name="a">&nbsp;&nbsp;&nbsp;&nbsp;downmix&#160;<\/a><\/strong> $/;"	a
 aa_ca	lame/mpglib/layer3.c	/^static real aa_ca[8],aa_cs[8];$/;"	v	file:
@@ -834,11 +841,13 @@ genre_last	lame/id3tag.c	/^int genre_last=147;$/;"	v
 genre_list	lame/id3tag.c	/^char *genre_list[]={$/;"	v
 get1bit	lame/mpglib/layer3.c	/^static unsigned int get1bit(void)$/;"	f	file:
 get_audio	lame/get_audio.c	/^int get_audio(lame_global_flags *gfp,short buffer[2][1152],int stereo)$/;"	f
+get_bin	wave.cpp	/^int *get_bin(struct audio *ap)$/;"	f
 get_lame_version	lame/version.c	/^char* get_lame_version(void)$/;"	f
 get_main_menu	lame/gtkanal.c	/^static void get_main_menu(GtkWidget *window, GtkWidget ** menubar) {$/;"	f	file:
 get_mp3x_version	lame/version.c	/^char* get_mp3x_version(void)$/;"	f
 get_psy_version	lame/version.c	/^char* get_psy_version(void)$/;"	f
 get_side_info	lame/formatBitstream.c	/^get_side_info(void)$/;"	f	file:
+get_waveformDataSize	wave.cpp	/^long get_waveformDataSize(struct audio *ap)$/;"	f
 getbits	lame/mpglib/common.c	/^unsigned int getbits(int number_of_bits)$/;"	f
 getbits_fast	lame/mpglib/common.c	/^unsigned int getbits_fast(int number_of_bits)$/;"	f
 getframebits	lame/util.c	/^void getframebits(lame_global_flags *gfp,int *bitsPerFrame, int *mean_bits) {$/;"	f
@@ -905,6 +914,8 @@ idle_count	lame/gtkanal.c	/^static gint idle_count;       \/* pause & plot when 
 idle_count_max	lame/gtkanal.c	/^static gint idle_count_max;   \/* number of frames to process before plotting *\/$/;"	v	file:
 idle_end	lame/gtkanal.c	/^static gint idle_end=0;      \/* process all frames, stop at last frame  *\/$/;"	v	file:
 idle_keepgoing	lame/gtkanal.c	/^static gint idle_keepgoing;        \/* processing of frames is ON *\/$/;"	v	file:
+imag	fft/fft.c	/^	double imag;$/;"	m	struct:twinddle_factor	file:
+imag	fft/main.c	/^	double imag;$/;"	m	struct:twinddle_factor	file:
 inPath	lame/lame.h	/^  char *inPath;               \/* name of input file *\/$/;"	m	struct:__anon8
 inPath	lame/parse.c	/^  char    inPath[MAX_NAME_SIZE];$/;"	v
 in_samplerate	lame/lame.h	/^  int in_samplerate;          \/* input_samp_rate. default=44.1kHz     *\/$/;"	m	struct:__anon8
@@ -979,6 +990,7 @@ lsf	lame/mpglib/mpg123.h	/^    int lsf;$/;"	m	struct:frame
 m	lame/doc/html/switchs.html	/^    <strong>* <kbd>-m s\/<b>j\/<\/b>f\/m<\/kbd><a name="m">&nbsp;&nbsp;&nbsp;&nbsp;stereo $/;"	a
 m	lame/rtp.c	/^  int m:1;	\/* marker: 0 *\/$/;"	m	struct:rtpbits	file:
 m	lame/rtp.h	/^  int m:1;	\/* marker: 0 *\/$/;"	m	struct:rtpbits
+main	fft/main.c	/^int main(int argc, const char *argv[])$/;"	f
 main	lame/ieeefloat.c	/^main(void)$/;"	f
 main	lame/mp3rtp.c	/^int main(int argc, char **argv)$/;"	f
 main	lame/mp3x.c	/^int main(int argc, char **argv)$/;"	f
@@ -1160,7 +1172,6 @@ pretab2	lame/mpglib/layer3.c	/^static int pretab2[22] = {0,0,0,0,0,0,0,0,0,0,0,0
 prev	lame/mpglib/mpglib.h	/^	struct frame *prev;$/;"	m	struct:framebuf	typeref:struct:framebuf::frame
 prev	lame/mpglib/mpglib.h	/^        struct buf *prev;$/;"	m	struct:buf	typeref:struct:buf::buf
 print_audio_info	wave.cpp	/^int print_audio_info(struct audio *ap)$/;"	f
-print_bin	wave.cpp	/^int print_bin(struct audio *ap)$/;"	f
 print_header	lame/mpglib/common.c	/^void print_header(struct frame *fr)$/;"	f
 print_header_compact	lame/mpglib/common.c	/^void print_header_compact(struct frame *fr)$/;"	f
 private_bits	lame/l3side.h	/^	unsigned private_bits;$/;"	m	struct:__anon22
@@ -1191,6 +1202,8 @@ read_head	lame/mpglib/interface.c	/^static void read_head(struct mpstr *mp)$/;"	
 read_samples_mp3	lame/get_audio.c	/^int read_samples_mp3(lame_global_flags *gfp,FILE *musicin,short int mpg123pcm[2][1152],int stereo)$/;"	f
 read_samples_pcm	lame/get_audio.c	/^int read_samples_pcm(lame_global_flags *gfp,short sample_buffer[2304], int frame_size,int samples_to_read)$/;"	f
 read_samples_pcm	lame/get_audio.c	/^int read_samples_pcm(lame_global_flags *gfp,short sample_buffer[2304],int frame_size,int samples_to_read)$/;"	f
+real	fft/fft.c	/^	double real;$/;"	m	struct:twinddle_factor	file:
+real	fft/main.c	/^	double real;$/;"	m	struct:twinddle_factor	file:
 real	lame/mpglib/mpg123.h	27;"	d
 real	lame/mpglib/mpg123.h	29;"	d
 real	lame/mpglib/mpg123.h	31;"	d
@@ -1380,6 +1393,12 @@ tan1_2	lame/mpglib/layer3.c	/^static real tan1_1[16],tan2_1[16],tan1_2[16],tan2_
 tan2_1	lame/mpglib/layer3.c	/^static real tan1_1[16],tan2_1[16],tan1_2[16],tan2_2[16];$/;"	v	file:
 tan2_2	lame/mpglib/layer3.c	/^static real tan1_1[16],tan2_1[16],tan1_2[16],tan2_2[16];$/;"	v	file:
 text_window	lame/gtkanal.c	/^static void text_window (GtkWidget *widget, gpointer data)$/;"	f	file:
+tf_copy	fft/fft.c	/^int tf_copy(struct twinddle_factor *a, struct twinddle_factor *b)$/;"	f
+tf_copy	fft/main.c	/^int tf_copy(struct twinddle_factor *a, struct twinddle_factor *b)$/;"	f
+tf_init	fft/fft.c	/^struct twinddle_factor *tf_init(int *array, int size)$/;"	f
+tf_init	fft/main.c	/^struct twinddle_factor *tf_init(double *array, int size)$/;"	f
+tf_print	fft/fft.c	/^void tf_print(struct twinddle_factor *tf, int size)$/;"	f
+tf_print	fft/main.c	/^void tf_print(struct twinddle_factor *tf, int size)$/;"	f
 tfcos12	lame/mpglib/layer3.c	/^static real tfcos12[3];$/;"	v	file:
 tfcos36	lame/mpglib/layer3.c	/^static real tfcos36[9];$/;"	v	file:
 thm	lame/l3side.h	/^    III_psy_xmin thm;$/;"	m	struct:__anon20
@@ -1409,6 +1428,8 @@ ts_real_time	lame/timestatus.c	/^FLOAT ts_real_time(long frame) {$/;"	f
 ts_times	lame/timestatus.c	/^typedef struct ts_times {$/;"	s	file:
 ts_times	lame/timestatus.c	/^} ts_times;$/;"	t	typeref:struct:ts_times	file:
 tt	lame/l3side.h	/^			gr_info tt;$/;"	m	struct:__anon22::__anon23::gr_info_ss
+twinddle_factor	fft/fft.c	/^struct twinddle_factor$/;"	s	file:
+twinddle_factor	fft/main.c	/^struct twinddle_factor$/;"	s	file:
 u_char	lame/machine.h	/^	typedef unsigned char	u_char;$/;"	t
 u_int	lame/machine.h	/^	typedef unsigned int	u_int;$/;"	t
 u_long	lame/machine.h	/^	typedef unsigned long	u_long;$/;"	t

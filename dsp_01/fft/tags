@@ -4,13 +4,23 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+FFT_Calc	fft.c	/^struct twinddle_factor *FFT_Calc($/;"	f
 FFT_Calc	main.c	/^struct twinddle_factor *FFT_Calc($/;"	f
+Main_FFT	fft.c	/^struct twinddle_factor *Main_FFT(struct twinddle_factor *input, const int size, int inverse)$/;"	f
 Main_FFT	main.c	/^struct twinddle_factor *Main_FFT(struct twinddle_factor *input, const int size, int inverse)$/;"	f
+PI	fft.c	4;"	d	file:
 PI	main.c	4;"	d	file:
+_main	fft.c	/^int _main(int argc, const char *argv[])$/;"	f
+imag	fft.c	/^	double imag;$/;"	m	struct:twinddle_factor	file:
 imag	main.c	/^	double imag;$/;"	m	struct:twinddle_factor	file:
 main	main.c	/^int main(int argc, const char *argv[])$/;"	f
+real	fft.c	/^	double real;$/;"	m	struct:twinddle_factor	file:
 real	main.c	/^	double real;$/;"	m	struct:twinddle_factor	file:
+tf_copy	fft.c	/^int tf_copy(struct twinddle_factor *a, struct twinddle_factor *b)$/;"	f
 tf_copy	main.c	/^int tf_copy(struct twinddle_factor *a, struct twinddle_factor *b)$/;"	f
-tf_init	main.c	/^struct twinddle_factor *tf_init(int *array, int size)$/;"	f
+tf_init	fft.c	/^struct twinddle_factor *tf_init(int *array, int size)$/;"	f
+tf_init	main.c	/^struct twinddle_factor *tf_init(double *array, int size)$/;"	f
+tf_print	fft.c	/^void tf_print(struct twinddle_factor *tf, int size)$/;"	f
 tf_print	main.c	/^void tf_print(struct twinddle_factor *tf, int size)$/;"	f
+twinddle_factor	fft.c	/^struct twinddle_factor$/;"	s	file:
 twinddle_factor	main.c	/^struct twinddle_factor$/;"	s	file:
