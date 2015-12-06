@@ -21,38 +21,33 @@ struct twinddle_factor *FFT_Calc(
 {
   int i = 0;
 	struct twinddle_factor *t = NULL;
-  
-  /* Return */
-  if (size == 1) {
-    tf_copy(&result[(*index)], &input[*(index)]);
-    *(index) = *(index) + 1;
-
-    printf("End! : size : %d, H_%d | %lf, %lf \n", size, *index, input[*(index)].real, input[*(index)].imag);
-    printf("END input : %lf %lf\n", input[(*index)].real, input[(*index)].imag);
-    printf("END result : %lf %lf\n", result[(*index)].real, result[(*index)].imag);
-    /* tf_print(input, size);  */
-    return NULL;
-  }
-
-  if (size == 2) 
-  {
-  }
-
-	double degree = 2*PI/ size * inverse;
-  t = (struct twinddle_factor*)malloc(sizeof(struct twinddle_factor) * size);
 
   printf(">>>> 111 Loop Size : %d, H_%d \n", size, *index);
   tf_print(input, size); 
 
-  for (i = 0; i < size / 2; i++) {
+  /* Return */
+  if (size == 1) {
 
+    printf(">>>> End! 2개 : size : %d, H_%d] \n", size, *index);
+    tf_copy(&result[(*index)], &input[0]);
+
+    printf("bb END input : %lf %lf\n", input[0].real, input[0].imag);
+    printf("bb END result : %lf %lf\n", result[(*index)].real, result[(*index)].imag);
+    /* tf_print(input, size);  */
+
+    *(index) = *(index) + 1;
+    return NULL;
+  }
+
+	double degree = 2 * PI/ size * inverse;
+  t = (struct twinddle_factor*)malloc(sizeof(struct twinddle_factor) * size);
+
+  for (i = 0; i < size / 2; i++) {
     t[i].real = input[i].real + input[i + size / 2].real;
 		t[i].imag = input[i].imag + input[i + size / 2].imag;
   }
 
-	for (i = 0; i < size / 2; i++)
-  {
-
+	for (i = 0; i < size / 2; i++) {
     t[i + size / 2].real = (input[i].real - input[i + size / 2].real)*cos(degree*i) + (input[i].imag - input[i + size / 2].imag)*sin(degree*i);
 		t[i + size / 2].imag = (input[i + size / 2].real - input[i].real)*sin(degree*i) + (input[i].imag - input[i + size / 2].imag)*cos(degree*i);
 	}
@@ -63,7 +58,6 @@ struct twinddle_factor *FFT_Calc(
   FFT_Calc(result, &t[0], size/2, inverse, index);
   FFT_Calc(result, &t[size/2], size/2, inverse, index);
   
-  /* printf("%lf \n",cos(degree*4*(1))); */
 	return t;
 }
 
@@ -73,7 +67,6 @@ int tf_copy(struct twinddle_factor *a, struct twinddle_factor *b)
   a->imag = b->imag;
 
   return 0;
-
 }
 
 struct twinddle_factor *tf_init(int *array, int size)
@@ -144,8 +137,8 @@ void tf_print(struct twinddle_factor *tf, int size)
 int main(int argc, const char *argv[])
 {
   int size = 8;
-  /* int array[] = {1, 2, 3, 4}; */
   int array[] = {1, 2, 3, 4, 5, 6, 7, 8};
+  /* int array[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}; */
   struct twinddle_factor *tf = NULL;
   struct twinddle_factor *result = NULL;
 
