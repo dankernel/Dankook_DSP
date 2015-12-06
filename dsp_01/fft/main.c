@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#define PI	3.141
+#define PI	3.141592
 
 struct twinddle_factor
 {
@@ -14,21 +14,24 @@ void tf_print(struct twinddle_factor *tf, int size);
 struct twinddle_factor *FFT_Calc(struct twinddle_factor *input, const int size)
 {
   int i = 0;
-	double degree = 360 / size;
-
-	struct twinddle_factor *t = (struct twinddle_factor*)malloc(sizeof(struct twinddle_factor) * size);
+	double degree = 2*PI/ size;
+	struct twinddle_factor *t = NULL;
+  
+  t = (struct twinddle_factor*)malloc(sizeof(struct twinddle_factor) * size);
 
   for (i = 0; i < size / 2; i++) {
     t[i].real = input[i].real + input[i + size / 2].real;
 		t[i].imag = input[i].imag + input[i + size / 2].imag;
-
-    /* printf("%d i %lf %d  isize %lf\n",i,input[i].real,i+size/2,input[i+size/2].real); */
   }
 
 	for (i = 0; i < size / 2; i++) {
-		t[i + size / 2].real = (input[i].real + input[i + size / 2].real)*cos(degree*i) + (input[i].imag - input[i+size/2].imag)*sin(degree*i);
-		t[i + size / 2].imag = (input[i + size / 2].real - input[i].real)*sin(degree*i) + (input[i].imag + input[i + size / 2].imag)*cos(degree*i);
+		t[i + size / 2].real = (input[i].real + input[i + size / 2].real)*cos(degree*(i+size/2)) + (input[i].imag - input[i + size / 2].imag)*sin(degree*i);
+    
+		t[i + size / 2].imag = (input[i + size / 2].real - input[i].real)*sin(degree*i) + (input[i].imag + input[i + size / 2].imag)*cos(degree*(i+size/2));
+    
 	}
+  
+  printf("%lf \n",cos(degree*4*(1)));
 
 	return t;
 }
@@ -68,16 +71,18 @@ void tf_print(struct twinddle_factor *tf, int size)
 
 int main(int argc, const char *argv[])
 {
-  int array[] = {1, 2, 3, 4};
+  int size = 8;
+  /* int array[] = {1, 2, 3, 4}; */
+  int array[] = {1, 2, 3, 4, 5, 6, 7, 8};
   struct twinddle_factor *tf = NULL;
 
-  tf = tf_init(array, 4);
+  tf = tf_init(array, size);
 
-  tf_print(tf, 4);
+  tf_print(tf, size);
 
   printf("===== \n\n");
-  tf = FFT_Calc(tf, 4);
-  tf_print(tf, 4);
+  tf = FFT_Calc(tf, size);
+  tf_print(tf, size);
   
   return 0;
 }
