@@ -11,20 +11,6 @@
 #define MB KB * 1024
 #define GB MB * 1024
 
-char *tmp_dkdk(int argc, char *argv[]) 
-{
-  // lame_global_flags gf;
-
-  /* initialize libmp3lame */
-  // laem_init(&gf);
-
-  if(argc==1) {
-    printf("[Fail] Arg error! \n");
-  }
-
-  return NULL;
-}
-
 char *mp3_encode(char *path) 
 {
   int ret = 0;
@@ -69,6 +55,9 @@ int main(int argc, char *argv[]) {
   int *tmp = NULL;
   tmp = get_bin(ap);
 
+  //test
+  write_do();
+
   /* Make twinddle_factor struct */
   int size = get_waveformDataSize(ap);
   struct twinddle_factor *tf = NULL;
@@ -79,6 +68,7 @@ int main(int argc, char *argv[]) {
   printf("=== END ===\n");
 
   /* Print */
+  tf_bit_reverse(tf, size);
   tf_print(tf, size);
 
   /* Decimation */

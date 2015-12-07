@@ -216,15 +216,16 @@ int WriteWave(char *name,
  */
 void write_do()
 {
-  char name[100] = "do.wav";
+  char name[100] = "me.wav";
 
   static double freq[] = {264.0, 297.0, 330.0, 352.0, 396.0, 440.0, 495.0, 528.0}; // 도 의 주파수
+  // static double freq[] = {264.0, 264.0, 264.0, 264.0, 264.0, 264.0, 264.0, 264.0}; // 도 의 주파수
 
   long SamplesPerSec = 22050; // 22kHz sampling
   short BitsPerSample = 8; // 8bits
   short Channels = 1; // mono
   double SamplesPeriod = 1 / SamplesPerSec;
-  double PlayTime = 8;
+  double PlayTime = 1;
   long waveformDataSize;
   unsigned char *waveformData;
   double t, f;
@@ -234,14 +235,13 @@ void write_do()
   waveformData = (unsigned char *)malloc(sizeof(char)*waveformDataSize);
 
   t = 0.0;
-  f = freq[0];
+  f = freq[2];
   for (index = 0; index < waveformDataSize; index++, t += 1.0 / SamplesPerSec) {
-    f = freq[(int)(index / 22050)];  // 도 ~
     waveformData[index] = (int)(128.0 + 100.0 * sin(2.0 * PI * f * t) + 0.5);
-    printf("%02X \n", waveformData[index]);
+    // printf("%02X \n", waveformData[index]);
   }
 
-  printf("%10ld %10lf\n", index, f);
+  // printf("%10ld %10lf\n", index, f);
   WriteWave(name, BitsPerSample, SamplesPerSec, Channels, waveformData, waveformDataSize);
 
   free(waveformData);

@@ -171,6 +171,7 @@ F8type	lame/quantize-pvt.c	947;"	d	file:
 F8type	lame/quantize-pvt.c	950;"	d	file:
 FALSE	lame/mpglib/mpg123.h	37;"	d
 FALSE	lame/util.h	20;"	d
+FFT	fft/fft3.c	/^void FFT(double data[], int n_point, int inverse_option)$/;"	f
 FFTOFFSET	lame/encoder.h	40;"	d
 FFT_Calc	fft/fft.c	/^struct twinddle_factor *FFT_Calc($/;"	f
 FFT_Calc	fft/main.c	/^struct twinddle_factor *FFT_Calc($/;"	f
@@ -376,6 +377,7 @@ PGM	lame/Makefile	/^   PGM = lame.exe$/;"	m
 PGM	lame/Makefile	/^PGM = lame$/;"	m
 PHBE_STREAM	lame/Dll/BladeMP3EncDLL.h	/^typedef		HBE_STREAM				*PHBE_STREAM;$/;"	t
 PI	fft/fft.c	4;"	d	file:
+PI	fft/fft3.c	25;"	d	file:
 PI	fft/main.c	4;"	d	file:
 PI	lame/util.h	31;"	d
 PI	lame/util.h	33;"	d
@@ -481,6 +483,7 @@ TS_CLOCKS_PER_SEC	lame/timestatus.c	13;"	d	file:
 TS_CLOCKS_PER_SEC	lame/timestatus.c	72;"	d	file:
 TS_CLOCKS_PER_SEC	lame/timestatus.c	7;"	d	file:
 TS_TIME_DECOMPOSE	lame/timestatus.c	126;"	d	file:
+TWOPI	fft/fft3.c	26;"	d	file:
 TestFromIeeeDouble	lame/ieeefloat.c	/^TestFromIeeeDouble(char *hex)$/;"	f
 TestFromIeeeExtended	lame/ieeefloat.c	/^TestFromIeeeExtended(char *hex)$/;"	f
 TestFromIeeeSingle	lame/ieeefloat.c	/^TestFromIeeeSingle(char *hex)$/;"	f
@@ -541,6 +544,7 @@ XRPOW_FTOI	lame/quantize-pvt.c	915;"	d	file:
 XRPOW_FTOI	lame/quantize-pvt.c	927;"	d	file:
 _DEBUGDLL	lame/Dll/BladeMP3EncDLL.c	35;"	d	file:
 _FORMAT_BITSTREAM_H	lame/formatBitstream.h	2;"	d
+_USE_MATH_DEFINES	fft/fft3.c	20;"	d	file:
 ___BLADEDLL_H_INCLUDED___	lame/Dll/BladeMP3EncDLL.h	22;"	d
 __declspec	lame/Dll/BladeMP3EncDLL.c	/^__declspec(dllexport) BE_ERR	beCloseStream(HBE_STREAM hbeStream)$/;"	f
 __declspec	lame/Dll/BladeMP3EncDLL.c	/^__declspec(dllexport) BE_ERR	beDeinitStream(HBE_STREAM hbeStream, PBYTE pOutput, PDWORD pdwOutput)$/;"	f
@@ -596,6 +600,8 @@ big_values	lame/l3side.h	/^	unsigned big_values;$/;"	m	struct:__anon21
 big_values	lame/mpglib/mpg123.h	/^      unsigned big_values;$/;"	m	struct:gr_info_s
 bin_search_StepSize2	lame/quantize-pvt.c	/^bin_search_StepSize2 (lame_global_flags *gfp,int desired_rate, int start, int *ix, $/;"	f
 binsearchDirection_t	lame/quantize-pvt.c	/^} binsearchDirection_t;$/;"	t	typeref:enum:__anon17	file:
+bit_reverse	fft/fft.c	/^void bit_reverse(int data[], int size)$/;"	f
+bit_reversing	fft/fft.c	/^int bit_reversing(int i, int size)$/;"	f
 bit_stream_struc	lame/util.h	/^typedef struct  bit_stream_struc {$/;"	s
 bitindex	lame/mpglib/common.c	/^int bitindex;$/;"	v
 bitrate	lame/gtkanal.h	/^  int framesize,stereo,js,ms_stereo,i_stereo,emph,bitrate,sampfreq,maindata;$/;"	m	struct:__anon7
@@ -990,6 +996,7 @@ lsf	lame/mpglib/mpg123.h	/^    int lsf;$/;"	m	struct:frame
 m	lame/doc/html/switchs.html	/^    <strong>* <kbd>-m s\/<b>j\/<\/b>f\/m<\/kbd><a name="m">&nbsp;&nbsp;&nbsp;&nbsp;stereo $/;"	a
 m	lame/rtp.c	/^  int m:1;	\/* marker: 0 *\/$/;"	m	struct:rtpbits	file:
 m	lame/rtp.h	/^  int m:1;	\/* marker: 0 *\/$/;"	m	struct:rtpbits
+main	fft/fft3.c	/^int main(int argc, char *argv[])$/;"	f
 main	fft/main.c	/^int main(int argc, const char *argv[])$/;"	f
 main	lame/ieeefloat.c	/^main(void)$/;"	f
 main	lame/mp3rtp.c	/^int main(int argc, char **argv)$/;"	f
@@ -1393,6 +1400,7 @@ tan1_2	lame/mpglib/layer3.c	/^static real tan1_1[16],tan2_1[16],tan1_2[16],tan2_
 tan2_1	lame/mpglib/layer3.c	/^static real tan1_1[16],tan2_1[16],tan1_2[16],tan2_2[16];$/;"	v	file:
 tan2_2	lame/mpglib/layer3.c	/^static real tan1_1[16],tan2_1[16],tan1_2[16],tan2_2[16];$/;"	v	file:
 text_window	lame/gtkanal.c	/^static void text_window (GtkWidget *widget, gpointer data)$/;"	f	file:
+tf_bit_reverse	fft/fft.c	/^void tf_bit_reverse(struct twinddle_factor *tf, int size)$/;"	f
 tf_copy	fft/fft.c	/^int tf_copy(struct twinddle_factor *a, struct twinddle_factor *b)$/;"	f
 tf_copy	fft/main.c	/^int tf_copy(struct twinddle_factor *a, struct twinddle_factor *b)$/;"	f
 tf_init	fft/fft.c	/^struct twinddle_factor *tf_init(int *array, int size)$/;"	f
@@ -1408,7 +1416,6 @@ timestamp	lame/rtp.c	/^  int timestamp;	\/* start: random *\/$/;"	m	struct:rtphe
 timestamp	lame/rtp.h	/^  int timestamp;        \/* start: random *\/$/;"	m	struct:rtpheader
 timestatus	lame/timestatus.c	/^void timestatus(int samp_rate,long frameNum,long totalframes,int framesize)$/;"	f
 title	lame/id3tag.h	/^	char title[31];$/;"	m	struct:__anon9
-tmp_dkdk	main.cpp	/^char *tmp_dkdk(int argc, char *argv[]) $/;"	f
 toc	lame/VbrTag.h	/^  u_char	toc[NUMTOCENTRIES];	\/* may be NULL if toc not desired*\/$/;"	m	struct:__anon3
 tot_noise	lame/gtkanal.h	/^  double tot_noise[2][2];$/;"	m	struct:__anon7
 totalframes	lame/gtkanal.c	/^  int totalframes;$/;"	m	struct:gtkinfostruct	file:

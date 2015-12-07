@@ -3,6 +3,9 @@
 #include <math.h>
 #define PI	3.1415926535
 
+/*
+ * Twinddle factor strcut
+ */
 struct twinddle_factor
 {
 	double real;
@@ -12,6 +15,14 @@ struct twinddle_factor
 void tf_print(struct twinddle_factor *tf, int size);
 int tf_copy(struct twinddle_factor *a, struct twinddle_factor *b);
 
+/*
+ * Calculating FFT
+ * @result : FFT result array
+ * @input : input array
+ * @size : size of input array
+ * @inverse :
+ * @index : h_(index)
+ */
 struct twinddle_factor *FFT_Calc(
     struct twinddle_factor *result, 
     struct twinddle_factor *input, 
@@ -22,12 +33,9 @@ struct twinddle_factor *FFT_Calc(
   int i = 0;
 	struct twinddle_factor *t = NULL;
 
-  /* Return */
+  /* Return recursive function */
   if (size == 1) {
-
     tf_copy(&result[(*index)], &input[0]);
-    /* tf_print(input, size);  */
-
     *(index) = *(index) + 1;
     return NULL;
   }
@@ -45,12 +53,19 @@ struct twinddle_factor *FFT_Calc(
 		t[i + size / 2].imag = (input[i + size / 2].real - input[i].real)*sin(degree*i) + (input[i].imag - input[i + size / 2].imag)*cos(degree*i);
 	}
 
+  printf("Loop 1\n");
+  tf_print(t, size);
+
+  /* Recursive */
   FFT_Calc(result, &t[0], size/2, inverse, index);
   FFT_Calc(result, &t[size/2], size/2, inverse, index);
   
 	return t;
 }
 
+/*
+ * Copy twinddle_factor
+ */
 int tf_copy(struct twinddle_factor *a, struct twinddle_factor *b)
 {
   a->real = b->real;
@@ -59,10 +74,14 @@ int tf_copy(struct twinddle_factor *a, struct twinddle_factor *b)
   return 0;
 }
 
+/*
+ * Init twinddle_factor array.
+ * @array : double array
+ * @size : size of array
+ */
 struct twinddle_factor *tf_init(double *array, int size)
 {
   int i = 0;
-
   struct twinddle_factor *tf = NULL;
 
   if (size <= 0)
@@ -99,7 +118,6 @@ struct twinddle_factor *Main_FFT(struct twinddle_factor *input, const int size, 
   index = (int*)malloc(sizeof(int));
   *index = 0;
 
-
   /* Init resutn array */
   result = tf_init(NULL, size);
 
@@ -110,40 +128,37 @@ struct twinddle_factor *Main_FFT(struct twinddle_factor *input, const int size, 
   return result;
 }
 
-
-
 void tf_print(struct twinddle_factor *tf, int size)
 {
   int i = 0;
 
-  printf("==== PRINT ====\n");
+  printf("==== PRINT : Start====\n");
   for (i = 0; i < size; i++) {
     printf("%p real : %lf / imag : %lf \n", &tf[i], tf[i].real, tf[i].imag);
   }
-  printf("==== PRINT : end ====\n");
+  printf("==== PRINT : End ====\n");
  
 }
 
 int main(int argc, const char *argv[])
 {
   int size = 8;
-  int array[] = {1, 2, 3, 4, 5, 6, 7, 8};
+  double array[] = {0, 1, 2, 3, 4, 5, 6, 7};
   /* int array[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}; */
   struct twinddle_factor *tf = NULL;
   struct twinddle_factor *result = NULL;
 
-
   int i=0;
   double tmp[8]={0,};
   
-  for(i=0;i<8;i++)
+  for(i=0; i < 8; i++)
   {
-    tmp[i]=sin(PI/4*i);
+    tmp[i] = sin(PI / 4 * i);
     printf("%lf\n", tmp[i]);
   }
  
-  /* tf = tf_init(array, size); */
-  tf = tf_init(tmp, size);
+  tf = tf_init(array, size);
+  /* tf = tf_init(tmp, size); */
 
   tf_print(tf, size);
 
@@ -152,4 +167,5 @@ int main(int argc, const char *argv[])
   tf_print(tf, size);
   
   return 0;
+
 }

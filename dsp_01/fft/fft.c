@@ -31,18 +31,27 @@ struct twinddle_factor *FFT_Calc(
     return NULL;
   }
 
-	double degree = 2 * PI/ size * inverse;
+	double degree = 2 * PI/ size;
   t = (struct twinddle_factor*)malloc(sizeof(struct twinddle_factor) * size);
 
   for (i = 0; i < size / 2; i++) {
     t[i].real = input[i].real + input[i + size / 2].real;
 		t[i].imag = input[i].imag + input[i + size / 2].imag;
+   if(inverse==-1)
+   { t[i].real *=size;
+		t[i].imag *=size;}
+
   }
 
 	for (i = 0; i < size / 2; i++) {
-    t[i + size / 2].real = (input[i].real - input[i + size / 2].real)*cos(degree*i) + (input[i].imag - input[i + size / 2].imag)*sin(degree*i);
-		t[i + size / 2].imag = (input[i + size / 2].real - input[i].real)*sin(degree*i) + (input[i].imag - input[i + size / 2].imag)*cos(degree*i);
-	}
+    t[i + size / 2].real = (input[i].real - input[i + size / 2].real*inverse)*cos(degree*i) + (input[i].imag - input[i + size / 2].imag)*sin(degree*i)*inverse;
+		t[i + size / 2].imag = (input[i + size / 2].real - input[i].real*inverse)*sin(degree*i) + (input[i].imag - input[i + size / 2].imag)*cos(degree*i);
+
+    if(inverse==-1)
+    { t[i].real *=size;
+		t[i].imag *=size;}
+
+  }
 
   FFT_Calc(result, &t[0], size/2, inverse, index);
   FFT_Calc(result, &t[size/2], size/2, inverse, index);
@@ -116,25 +125,30 @@ void tf_print(struct twinddle_factor *tf, int size)
 
   printf("==== PRINT ====\n");
   for (i = 0; i < size; i++) {
-    printf("%p real : %lf / imag : %lf \n", &tf[i], tf[i].real, tf[i].imag);
+    printf("%d %p real : %lf / imag : %lf \n", i, &tf[i], tf[i].real, tf[i].imag);
   }
   printf("==== PRINT : end ====\n");
  
 }
 
-int bit_reversing(int i,int size)
+int bit_reversing(int i, int size)
 {
-  int *bit=(int*)malloc(size),j=0,result=0;
+  int *bit = NULL, j = 0, result = 0;
+ 
+  if (size < 1)
+    return 0;
 
-  for(j=0;j<size;j++,i/=2)
-  {
-    bit[size-j-1]=i%2;
+  bit = (int*)malloc(sizeof(int) * size);
+
+  for(j = 0; j < size; j++, i /= 2) {
+    bit[size - j - 1] = i % 2;
   }
   
-  for(j=0;j<size;j++)
-  {
-    result+=pow(2.0,j)*bit[j];
+  for(j = 0; j < size; j++) {
+    result += pow(2.0, j) * bit[j];
   }
+  
+  free(bit);
   return result;
 }
 
@@ -144,46 +158,81 @@ int bit_reversing(int i,int size)
  * 바꿔넣습니다.
  *
  * 아래 함수는 데이터들의 순서를 리버싱시키는 함수로 매개변수로 들어온 원본이 바뀝니다.
- * 예를 들어 데이터가 1234567로 저장되어있었다면 함수 실행 후 04261537로 데이터 순서가 리버싱됩니다.
- * 결과로 받은 구조체의 real들을 배열에 때려넣고 비트리버싱 시킨 다음, 찍으면 그게 주파수 변환된  아웃이에요.
+ * 예를 들어 데이터가 01234567로 저장되어있었다면 함수 실행 후 04261537로 데이터 순서가 리버싱됩니다.
+ * 결과로 받은 구조체의 real들을 배열에 때려넣고 비트리버싱 시킨 다음, 찍으면 그게 주파수 변환된 아웃이에요.
  * */
-void bit_reverse(int data[],int size)
+void bit_reverse(int data[], int size)
 {
-  int count=0,i=0,j=0, tmp=0,reversed=0;
-  for(j=size;j>1;j=j>>1)
-  {
+  int count = 0, i = 0, j = 0, tmp = 0, reversed = 0;
+
+  for(j = size; j > 1; j = j >> 1) {
     ++count;
   }
 
-  for(i=0;i<size/2;i++)
-  {
-      reversed = bit_reversing(i,count);
-      tmp=data[i];
-      data[i]=data[reversed];
-      data[reversed]=tmp;
+  for(i = 0; i < size / 2; i++) {
+      reversed = bit_reversing(i, count);
+
+      tmp = data[i];
+      data[i] = data[reversed];
+      data[reversed] = tmp;
+      printf("swap : %d <=> %d \n", reversed, i);
   }
 }
 
-int main(int argc, const char *argv[])
+void tf_bit_reverse(struct twinddle_factor *tf, int size)
 {
-  int size = 8;
-  int array[] = {0,1,2,3,4,5,6,7};
- 
-  /* int array[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}; */
+  int count = 0, i = 0, j = 0, reversed = 0;
+  struct twinddle_factor tmp;
+
+  for (j = size; j > 1; j = j >> 1) {
+    ++count;
+  }
+
+  for (i = 0; i < size / 2; i++) {
+    reversed = bit_reversing(i, count);
+
+    tf_copy(&tmp, &tf[i]);
+    tf_copy(&tf[i], &tf[reversed]);
+    tf_copy(&tf[reversed], &tmp);
+  }
+
+}
+
+int _main(int argc, const char *argv[])
+{
+  int size = 8,i=0;
+  int array[8] = {0,1,2,3,4,5,6,7};
+  int array2[8] ={0,};
+  
   struct twinddle_factor *tf = NULL;
   struct twinddle_factor *result = NULL;
 
   tf = tf_init(array, size);
-
+  printf("Init..\n");
   tf_print(tf, size);
 
   printf("===== \n\n");
   tf = Main_FFT(tf, size, 1);
+  printf("Result\n");
   tf_print(tf, size);
-  /* 리버싱 확인하기 */
-  bit_reverse(array,size);
-  for(size=0;size<8;size++)
-    printf("%d\n",array[size]);
 
+  /* 리버싱 확인하기 */
+  for (i = 0; i < size; i++) {
+    array[i] = tf[i].real;
+    array2[i] = tf[i].imag;
+  }
+
+  printf("bit_reverse X\n");
+  for (i = 0; i < size; i++)
+    printf("%2d %d\n", i, array[i]*array2[i]);
+  bit_reverse(array, size);
+  bit_reverse(array2, size);
+  printf("reverse\n");
+  tf_print(tf, size);
+
+  printf("bit_reverse O\n");
+  for (i = 0; i < size; i++)
+    printf("%2d %d\n", i, array[i]*array2[i]);
+  
   return 0;
 }
