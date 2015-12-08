@@ -1,7 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+
+#ifdef PI
+/*  */
+#else
 #define PI	3.1415926535
+#endif
 
 struct twinddle_factor
 {
@@ -31,31 +36,24 @@ struct twinddle_factor *FFT_Calc(
     return NULL;
   }
 
-	double degree = 2 * PI/ size;
+	double degree = 2 * PI/ size*inverse;
   t = (struct twinddle_factor*)malloc(sizeof(struct twinddle_factor) * size);
 
   for (i = 0; i < size / 2; i++) {
     t[i].real = input[i].real + input[i + size / 2].real;
 		t[i].imag = input[i].imag + input[i + size / 2].imag;
-   if(inverse==-1)
-   { t[i].real *=size;
-		t[i].imag *=size;}
-
   }
 
 	for (i = 0; i < size / 2; i++) {
-    t[i + size / 2].real = (input[i].real - input[i + size / 2].real*inverse)*cos(degree*i) + (input[i].imag - input[i + size / 2].imag)*sin(degree*i)*inverse;
-		t[i + size / 2].imag = (input[i + size / 2].real - input[i].real*inverse)*sin(degree*i) + (input[i].imag - input[i + size / 2].imag)*cos(degree*i);
-
-    if(inverse==-1)
-    { t[i].real *=size;
-		t[i].imag *=size;}
+    t[i + size / 2].real = (input[i].real - input[i + size / 2].real)*cos(degree*i) + (input[i].imag - input[i + size / 2].imag)*sin(degree*i);
+		t[i + size / 2].imag = (input[i + size / 2].real - input[i].real)*sin(degree*i) + (input[i].imag - input[i + size / 2].imag)*cos(degree*i);
 
   }
 
   FFT_Calc(result, &t[0], size/2, inverse, index);
   FFT_Calc(result, &t[size/2], size/2, inverse, index);
   
+ 
 	return t;
 }
 
@@ -101,7 +99,7 @@ insert_0:
 struct twinddle_factor *Main_FFT(struct twinddle_factor *input, const int size, int inverse)
 {
   struct twinddle_factor *result = NULL;
-  int *index = NULL;
+  int *index = NULL,i=0;
 
   /* Init inedx */
   index = (int*)malloc(sizeof(int));
@@ -112,7 +110,7 @@ struct twinddle_factor *Main_FFT(struct twinddle_factor *input, const int size, 
 
   /* Run FFT main */
   FFT_Calc(result, input, size, inverse, index);
-
+  
   printf("Index : %d\n", *index);
   return result;
 }
@@ -202,37 +200,29 @@ int _main(int argc, const char *argv[])
 {
   int size = 8,i=0;
   int array[8] = {0,1,2,3,4,5,6,7};
-  int array2[8] ={0,};
   
   struct twinddle_factor *tf = NULL;
   struct twinddle_factor *result = NULL;
 
   tf = tf_init(array, size);
-  printf("Init..\n");
+  printf("Init..입력값 \n");
   tf_print(tf, size);
 
   printf("===== \n\n");
   tf = Main_FFT(tf, size, 1);
-  printf("Result\n");
+  printf("변환됨 Result \n");
   tf_print(tf, size);
 
   /* 리버싱 확인하기 */
-  for (i = 0; i < size; i++) {
-    array[i] = tf[i].real;
-    array2[i] = tf[i].imag;
-  }
-
-  printf("bit_reverse X\n");
-  for (i = 0; i < size; i++)
-    printf("%2d %d\n", i, array[i]*array2[i]);
-  bit_reverse(array, size);
-  bit_reverse(array2, size);
   printf("reverse\n");
+  tf_bit_reverse(tf,size);
   tf_print(tf, size);
+  tf=Main_FFT(tf,size,-1);
+  for(i=0;i<size;i++){tf[i].real/=size;tf[i].imag/=size;}
+  tf_print(tf,size);
+  tf_bit_reverse(tf,size);
+  tf_print(tf,size);
 
-  printf("bit_reverse O\n");
-  for (i = 0; i < size; i++)
-    printf("%2d %d\n", i, array[i]*array2[i]);
-  
+
   return 0;
 }

@@ -216,7 +216,7 @@ int WriteWave(char *name,
  */
 void write_do()
 {
-  char name[100] = "me.wav";
+  char name[100] = "pa.wav";
 
   static double freq[] = {264.0, 297.0, 330.0, 352.0, 396.0, 440.0, 495.0, 528.0}; // 도 의 주파수
   // static double freq[] = {264.0, 264.0, 264.0, 264.0, 264.0, 264.0, 264.0, 264.0}; // 도 의 주파수
@@ -235,7 +235,7 @@ void write_do()
   waveformData = (unsigned char *)malloc(sizeof(char)*waveformDataSize);
 
   t = 0.0;
-  f = freq[2];
+  f = freq[3];
   for (index = 0; index < waveformDataSize; index++, t += 1.0 / SamplesPerSec) {
     waveformData[index] = (int)(128.0 + 100.0 * sin(2.0 * PI * f * t) + 0.5);
     // printf("%02X \n", waveformData[index]);
@@ -423,8 +423,6 @@ int *get_bin(struct audio *ap)
     return NULL;
 
   waveformDataSize = (long)(PlayTime * ap->SamplesPerSec * ap->F.field.wChannels * (ap->F.field.wBitsPerSample / 8));
-  // printf("tmptmp : %ld\n", ap->SamplesPerSec * ap->F.field.wChannels * (ap->F.field.wBitsPerSample / 8));
-  printf("Array size : %ld\n", waveformDataSize);
 
   int *array = NULL;
   array = (int *)malloc(sizeof(array) * waveformDataSize);
@@ -433,20 +431,24 @@ int *get_bin(struct audio *ap)
     array[i] = ap->D.waveformData[i];
     // printf("%d \n", ap->D.waveformData[i]);
   }
-  printf("Print bin end\n");
+  printf("[OK] Print bin\n");
 
   return array;
 }
 
-int write_audio(struct audio *ap) 
+int write_audio(struct audio *ap, const char *tmp)
 {
   int ret = 0;
-  char new_file[1024] = "new_";
+  char new_file[1024];
 
   if (ap == NULL)
     return -1;
 
-  WriteWave(ap->path, ap->F.field.wBitsPerSample, ap->SamplesPerSec, 
+  strcpy(new_file, tmp);
+  strcat(new_file, ap->path);
+  strcpy(ap->path, new_file);
+
+  WriteWave(new_file, ap->F.field.wBitsPerSample, ap->SamplesPerSec, 
       ap->F.field.wChannels, ap->D.waveformData, ap->D.chunkSize);
 
   return 0;
@@ -467,7 +469,7 @@ struct audio *Decimation(struct audio *ap)
   tmp->F.field.wChannels = 1;
   tmp->D.chunkSize /= 2;
 
-  for(i=0; i < ap->D.chunkSize; i+=4) {
+  for(i = 0 ; i < ap->D.chunkSize; i += 4) {
       tmp->D.waveformData[i/2] = ap->D.waveformData[i];
       tmp->D.waveformData[(i/2)+1] = ap->D.waveformData[i+1];
   }

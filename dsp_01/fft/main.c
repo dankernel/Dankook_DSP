@@ -151,12 +151,7 @@ int main(int argc, const char *argv[])
   int i=0;
   double tmp[8]={0,};
   
-  for(i=0; i < 8; i++)
-  {
-    tmp[i] = sin(PI / 4 * i);
-    printf("%lf\n", tmp[i]);
-  }
- 
+  
   tf = tf_init(array, size);
   /* tf = tf_init(tmp, size); */
 
