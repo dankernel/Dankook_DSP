@@ -111,6 +111,11 @@ struct twinddle_factor *Main_FFT(struct twinddle_factor *input, const int size, 
   /* Run FFT main */
   FFT_Calc(result, input, size, inverse, index);
   
+  for (i = 0; i < size; i++) {
+    input[i].real /= size;
+    input[i].imag /= size;
+  }
+
   printf("Index : %d\n", *index);
   return result;
 }

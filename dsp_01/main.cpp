@@ -79,26 +79,25 @@ int main(int argc, char *argv[]) {
 
   /* RUN FFT */
   printf("==== FFT start... ==== \n");
-  // tf = Main_FFT(tf, size, 1);
+  tf = Main_FFT(tf, size, 1);
   printf("==== FFT END ==== \n");
 
   /* Print */
-  // tf_bit_reverse(tf, size);
-  // tf_print(tf, size);
+  tf_bit_reverse(tf, size);
+  tf_print(tf, size);
 
   /* Decimation */
-  struct audio *new_ap;
-  if ((new_ap = Decimation(ap)) == NULL) {
-    printf("Error 1\n");
-    goto fail;
-  }
+  // struct audio *new_ap;
+  // if ((new_ap = Decimation(ap)) == NULL) {
+  //   printf("Error 1\n");
+  //   goto fail;
+  // }
+  // if (write_audio(new_ap, "mono_") < 0) {
+  //   printf("Error 2\n");
+  //   goto fail;
+  // }
 
-  if (write_audio(new_ap, "mono_") < 0) {
-    printf("Error 2\n");
-    goto fail;
-  }
-
-  print_audio_info(new_ap);
+  // print_audio_info(new_ap);
 
   printf("[OK] End\n");
   return 0;

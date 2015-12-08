@@ -77,7 +77,6 @@ BF_resizePartHolder	lame/formatBitstream.c	/^BF_PartHolder *BF_resizePartHolder(
 BINSEARCH_DOWN	lame/quantize-pvt.c	/^    BINSEARCH_DOWN$/;"	e	enum:__anon17	file:
 BINSEARCH_NONE	lame/quantize-pvt.c	/^    BINSEARCH_NONE,$/;"	e	enum:__anon17	file:
 BINSEARCH_UP	lame/quantize-pvt.c	/^    BINSEARCH_UP, $/;"	e	enum:__anon17	file:
-BIN_PINT_FLAG	main.cpp	18;"	d	file:
 BITS_IN_A_BYTE	lame/util.h	58;"	d
 BLKSIZE	lame/encoder.h	65;"	d
 BLKSIZE_s	lame/encoder.h	67;"	d
@@ -143,7 +142,6 @@ DCT12_PART1	lame/mpglib/layer3.c	1323;"	d	file:
 DCT12_PART2	lame/mpglib/layer3.c	1336;"	d	file:
 DEBUGXX	lame/vbrquantize.c	33;"	d	file:
 DECDELAY	lame/encoder.h	45;"	d
-DECIMATION_FLAG	main.cpp	15;"	d	file:
 DEP	lame/Makefile	/^DEP = $(c_sources:.c=.d)$/;"	m
 DEXP_MAX	lame/ieeefloat.c	199;"	d	file:
 DEXP_OFFSET	lame/ieeefloat.c	200;"	d	file:
@@ -177,7 +175,6 @@ FFT	fft/fft3.c	/^void FFT(double data[], int n_point, int inverse_option)$/;"	f
 FFTOFFSET	lame/encoder.h	40;"	d
 FFT_Calc	fft/fft.c	/^struct twinddle_factor *FFT_Calc($/;"	f
 FFT_Calc	fft/main.c	/^struct twinddle_factor *FFT_Calc($/;"	f
-FFT_FLAG	main.cpp	16;"	d	file:
 FFT_H	lame/fft.h	2;"	d
 FLOAT	lame/Dll/BladeMP3EncDLL.h	62;"	d
 FLOAT	lame/machine.h	/^	typedef float FLOAT;$/;"	t
@@ -327,7 +324,6 @@ MP3X_ALPHAVERSION	lame/version.h	37;"	d
 MP3X_BETAVERSION	lame/version.h	38;"	d
 MP3X_MAJOR_VERSION	lame/version.h	35;"	d
 MP3X_MINOR_VERSION	lame/version.h	36;"	d
-MP3_DECODE_FLAG	main.cpp	17;"	d	file:
 MP3_ERR	lame/mpglib/mpglib.h	40;"	d
 MP3_NEED_MORE	lame/mpglib/mpglib.h	42;"	d
 MP3_OK	lame/mpglib/mpglib.h	41;"	d
@@ -850,7 +846,6 @@ genre	lame/id3tag.h	/^	char genre[1];$/;"	m	struct:__anon9
 genre_last	lame/id3tag.c	/^int genre_last=147;$/;"	v
 genre_list	lame/id3tag.c	/^char *genre_list[]={$/;"	v
 get1bit	lame/mpglib/layer3.c	/^static unsigned int get1bit(void)$/;"	f	file:
-get_arg_flags	main.cpp	/^int get_arg_flags(int argc, char *argv[])$/;"	f
 get_audio	lame/get_audio.c	/^int get_audio(lame_global_flags *gfp,short buffer[2][1152],int stereo)$/;"	f
 get_bin	wave.cpp	/^int *get_bin(struct audio *ap)$/;"	f
 get_lame_version	lame/version.c	/^char* get_lame_version(void)$/;"	f
